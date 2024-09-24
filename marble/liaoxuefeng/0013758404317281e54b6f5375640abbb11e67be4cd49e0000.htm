@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html xmlns:itranswarp="http://www.itranswarp.com/" xmlns:wb="http://open.weibo.com/wb">
+<!--
+
+-->
+<head>
+    <meta charset="utf-8" />
+    <title>忽略特殊文件 - 廖雪峰的官方网站</title>
+    <meta name="viewport" content="width=device-width" />
+    <meta name="keywords" content="javascript,node,jquery,git,python,java,sql,linux,ios,android,教程,软件,编程,开发,运维,云计算,网络,互联网" />
+    <meta name="description" content="研究互联网产品和技术，提供原创中文精品教程" />
+    <meta property="x-nav" content=" /wiki/0013739516305929606dd18361248578c67b8067c8c017b000 " />
+    <link rel="alternate" href="/feed" title="廖雪峰的官方网站" type="application/rss+xml" />
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013758404317281e54b6f5375640abbb11e67be4cd49e0000" />
+    <meta property="og:title" content="忽略特殊文件" />
+    <meta property="og:description" content="史上最浅显易懂的Git教程" />
+    <meta property="og:image" content="http://www.liaoxuefeng.com/files/attachments/001385348516246a18bd54b498f4c74b694624d67f02fa9000/l" />
+
+    <!-- BEGIN CSS COMPRESS -->
+    <link rel="stylesheet" href="codemirror.css" tppabs="http://www.liaoxuefeng.com/static/themes/default/css/codemirror.css" />
+    <link rel="stylesheet" href="highlight.css" tppabs="http://www.liaoxuefeng.com/static/themes/default/css/highlight.css" />
+    <link rel="stylesheet" href="itranswarp.css" tppabs="http://www.liaoxuefeng.com/static/themes/default/css/itranswarp.css" />
+    <!-- END CSS COMPRESS -->
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="ie.css" tppabs="http://www.liaoxuefeng.com/static/themes/default/css/ie.css" />
+    <![endif]-->
+    
+    <script src="all.js" tppabs="http://www.liaoxuefeng.com/static/themes/default/js/all.js"></script>
+    
+    <script id="tplComment" type="text/plain">
+        <div class="uk-comment">
+            <div class="uk-comment-header" style="margin-bottom:0">
+                <a target="_blank" href="http://www.liaoxuefeng.com/user/{ user.id }"><img class="uk-comment-avatar uk-border-circle x-avatar" src="{ user.image_url }" width="50" height="50" alt=""></a>
+                <h4 class="uk-comment-title"><a target="_blank" href="http://www.liaoxuefeng.com/discuss/{ board_id }/{ id }">{ name }</a></h4>
+                <div class="uk-comment-meta"><a target="_blank" href="http://www.liaoxuefeng.com/user/{ user.id }">{ user.name }</a> created at { created_at.toSmartDate() }, Last updated at { updated_at.toSmartDate() }</div>
+            </div>
+            <div class="uk-comment-body x-auto-content">
+                { content|safe }
+            </div>
+        </div>
+    </script>
+
+    <script id="tplCommentReply" type="text/plain">
+        <div class="uk-comment">
+            <div class="uk-comment-header" style="margin-bottom:0">
+                <a target="_blank" href="http://www.liaoxuefeng.com/user/{ user.id }"><img class="uk-comment-avatar uk-border-circle x-avatar" src="{ user.image_url }" width="50" height="50" alt=""></a>
+                <div class="uk-comment-meta"><a target="_blank" href="http://www.liaoxuefeng.com/user/{ user.id }">{ user.name }</a></div>
+                <div class="uk-comment-meta">Created at { created_at.toSmartDate() }, Last updated at { updated_at.toSmartDate() }</div>
+            </div>
+            <div class="uk-comment-body x-auto-content">
+                { content|safe }
+            </div>
+        </div>
+    </script>
+
+    <script id="tplCommentInfo" type="text/plain">
+        <li>
+            <div class="x-comment-info">
+                <hr>
+                <a target="_blank" class="uk-button uk-button-small" href="http://www.liaoxuefeng.com/discuss/{ board_id }/{ id }"><i class="uk-icon-list-ul"></i> View Full Discuss</a>
+                &nbsp;
+                <a target="_blank" class="uk-button uk-button-small" href="http://www.liaoxuefeng.com/discuss/{ board_id }/{ id }#reply"><i class="uk-icon-reply"></i> Reply This Topic</a>
+            </div>
+        </li>
+    </script>
+
+    <script id="tplCommentArea" type="text/plain">
+        <div class="x-display-if-signin">
+            <p><button id="comment-make-button" type="button" class="uk-button uk-button-primary"><i class="uk-icon-comment"></i> Make a Comment</button></p>
+            <form id="comment-form" class="uk-form" style="display:none;">
+                <fieldset>
+                    <div class="uk-alert uk-alert-danger" style="display:none"></div>
+                    <div class="uk-form-row">
+                        <label>Title:</label>
+                    </div>
+                    <div class="uk-form-row">
+                        <input type="text" name="name" maxlength="100" style="width:100%">
+                    </div>
+                    <div class="uk-form-row">
+                        <label>Content:</label>
+                    </div>
+                    <div class="uk-form-row x-textarea">
+                    </div>
+                    <div class="uk-form-row">
+                        <button type="submit" class="uk-button uk-button-primary"><i class="uk-icon-check"></i> Post</button>
+                        &nbsp;&nbsp;
+                        <button type="button" class="uk-button x-cancel"><i class="uk-icon-close"></i> Cancel</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </script>
+
+    <style id="x-doc-style">
+
+        .x-display-if-signin { display: none; }
+
+    </style>
+    <script>
+        var g_time = parseFloat('1479159050648');
+        var g_signins = [{"id":"weibo","icon":"weibo","name":"使用新浪微博登录"}];
+//
+        var g_user = null;
+//
+    </script>
+
+
+
+
+
+    
+    
+<style>
+.x-wiki-visible {
+    display: block;
+}
+</style>
+
+<script>
+loadComments('0013758404317281e54b6f5375640abbb11e67be4cd49e0000');
+
+var
+    comment_type = 'wikipage',
+    comment_ref_id = '0013758404317281e54b6f5375640abbb11e67be4cd49e0000',
+    comment_tag = 'git';
+
+function onAuthSuccess() {
+    initCommentArea(comment_type, comment_ref_id, comment_tag);
+}
+
+$(function () {
+    if (g_user !== null) {
+        initCommentArea(comment_type, comment_ref_id, comment_tag);
+    }
+});
+
+$(function () {
+    var
+        current = $('#0013758404317281e54b6f5375640abbb11e67be4cd49e0000'),
+        prev = current.prev().find('a'),
+        next = current.next().find('a'),
+        L = [];
+    current.addClass('uk-active');
+    $('#off-0013758404317281e54b6f5375640abbb11e67be4cd49e0000').addClass('uk-active');
+    L.push('<div class="uk-clearfix uk-margin-left uk-margin-right">');
+    if (prev.length > 0) {
+        L.push('<span class="uk-float-left"><i class="uk-icon-chevron-left"></i> <a href="');
+        L.push(prev.attr('href'));
+        L.push('">');
+        L.push(encodeHtml(prev.text()));
+        L.push('</a></span>');
+    }
+    if (next.length > 0) {
+        L.push('<span class="uk-float-right"><a href="');
+        L.push(next.attr('href'));
+        L.push('">');
+        L.push(encodeHtml(next.text()));
+        L.push('</a> <i class="uk-icon-chevron-right"></i></span>')
+    }
+    L.push('</div>');
+    $('#x-wiki-prev-next').html(L.join(''));
+});
+</script>
+
+
+<style>
+.x-center {
+    margin: 0;
+}
+
+
+.x-center {
+    margin-left: 316px;
+    padding-left: 15px;
+}
+
+
+
+
+</style>
+
+<!-- BEGIN custom_header -->
+<script src="wb.js" tppabs="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+// git: add app link:
+$(function() {
+  if (location.pathname.indexOf('/wiki/0013739516305929606dd18361248578c67b8067c8c017b000')===0) {
+    $('.x-wiki-info').parent().css('position', 'relative').append('<a href="https://itunes.apple.com/cn/app/git-jiao-cheng/id876420437" target="_blank" style="display:block;width:135px;height:40px;position:absolute;right:10px;top:10px;"><img src="download-on-the-app-store.png"/*tpa=http://www.liaoxuefeng.com/static/img/download-on-the-app-store.png*/ /></a>');
+  }
+  // add new:
+  $('#ul-navbar a[href="http://www.liaoxuefeng.com/webpage/java"]').parent().append('<img style="position:absolute;right:-10px;top:3px;z-index:999" src="/files/attachments/001477919415261ebc91072244149e0ab69f60ae2abe39f000/l">');
+});
+</script>
+
+<script>
+// python 3: add 2.7 link:
+$(function() {
+  if (location.pathname.indexOf('/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000')===0) {
+    $('.x-wiki-info').parent().css('position', 'relative').append('<a href="001374738125095c955c1e6d8bb493182103fac9270762a000.htm"/*tpa=http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000*/ target="_blank" style="display:block;position:absolute;right:10px;top:10px;">2.7旧版教程</a>');
+  }
+});
+</script>
+
+<script>
+// python 2.7: add py3 link:
+$(function() {
+  if (location.pathname.indexOf('/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000')===0) {
+    $('#main .x-container').prepend('<div class="uk-alert uk-alert-danger">您目前正在学习的2.7版本的Python教程已过期，请立刻前往最新的Python 3 教程：<a href="0014316089557264a6b348958f449949df42a6d3a2e542c000.htm"/*tpa=http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000*/ class="uk-button uk-button-success">我要学 Python 3</a></div>');
+  }
+});
+</script>
+
+<script>
+// the ad:
+$(function() {
+  var _a_pros = [
+    {
+      id: 'zhufeng',
+      href: 'http://www.zhufengpeixun.cn/customize/node/index.html',
+      img: '/files/attachments/00145587235874321e448795b804a1e8356eb97a33f81c5000/0'
+    },
+    {
+      id: 'maiziedu',
+      href: 'http://www.maizitime.com/pages/ad12/python/kecheng.html?yy=lxfpy',
+      img: '/files/attachments/001468226657174e6b109d28e84442798a2a4451e7b2dea000/0'
+    },
+    {
+      id: 'xitu',
+      href: 'http://gold.xitu.io/welcome?utm_source=liaoxuefeng&utm_medium=banner&utm_content=gaoshou&utm_campaign=q3_personal',
+      img: '/files/attachments/00146917760141137418dc990d3459d99ea875458da0ea4000/0'
+    },
+    {
+      id: 'julyedu',
+      href: 'https://www.julyedu.com/course/getDetail/46?source=lxf',
+      img: '/files/attachments/001478055964356b6b89e710c5545219e0af3c9483662f3000/0'
+    }
+  ];
+
+/************
+  var _b_pros = {
+    id: 'dotcloud',
+    href: 'http://msa-summit.com/?daocloud',
+    img: '/files/attachments/001470127437945450d8dc4107f47af8c2564649939f4f6000/0'
+  };
+
+  var _b_pros = {
+    id: 'magua',
+    href: 'http://mooc.study.163.com/smartSpec/detail/1001180001.htm?from=liaoxuefeng',
+    img: '/files/attachments/0014753978861824ed11e0bfd124daa978fb61fe5f991ad000/0'
+  };
+************/
+
+  var _b_pros = {
+    id: 'julyedu',
+    href: 'https://www.julyedu.com/course/getDetail/47?from=liaoxuefeng',
+    img: '/files/attachments/001476779954421e3a6a9f1872d4db283fade7b6989ebb2000/0'
+  };
+
+  $('div.x-promo-b').html('<div style="width:300px;height:600px"><a target="_blank" href="' + _b_pros.href + '" onclick="_hmt.push([\'_trackEvent\', \'' + _b_pros.id + '\', \'click\', \'clicked\']);"><img src="' + _b_pros.img + '" style="width:300px;height:600px"></a></div>');
+
+  var i, s = '';
+  for (i=0; i<_a_pros.length; i++) {
+    s = s + '<div style="width:336px;height:280px;float:left;"><a target="_blank" href="' + _a_pros[i].href + '" onclick="_hmt.push([\'_trackEvent\', \'' + _a_pros[i].id + '\', \'click\', \'clicked\']);"><img src="' + _a_pros[i].img + '" style="width:336px;height:280px"></a></div>';
+  }
+  if (location.pathname.indexOf('/wiki/')===0 || location.pathname.indexOf('/article/')===0) {
+    s = s + '<div style="clear: both;"></div>';
+    $('.x-wiki-content').after(s);
+    $('.x-article-content').after(s);
+  }
+  else {
+    $('#the-promos').prepend(s);
+  }
+});
+</script>
+
+<script>
+// add share:
+$(function() {
+  if (location.pathname.indexOf('/wiki/')===0) {
+    $('.x-wiki-content').find('a[href^=http]').attr('target', '_blank');
+    if (!window.hurry) {
+      $('.x-wiki-content').after('<h3>感觉本站内容不错，读后有收获？</h3><p><a target="_blank" href="http://www.liaoxuefeng.com/webpage/donate" class="uk-button uk-button-primary"><i class="uk-icon-cny"></i> 我要小额赞助，鼓励作者写出更好的教程</a></p><h3>还可以分享给朋友</h3><p><wb:share-button appkey="1391944217" addition="full" type="button" ralateUid="1658384301" picture_search="false" pic="' + $('meta[property="og:image"]').attr('content') + '"></wb:share-button></p>');
+    } else {
+      $('.x-wiki-content').after('<h3>等待时间太久？</h3><p><a target="_blank" href="http://www.liaoxuefeng.com/webpage/donate" class="uk-button uk-button-primary"><i class="uk-icon-cny"></i> 我要催促作者更新教程</a></p><h3>还可以分享给朋友</h3><p><wb:share-button appkey="1391944217" addition="full" type="button" ralateUid="1658384301" picture_search="false" pic="' + $('meta[property="og:image"]').attr('content') + '"></wb:share-button></p>');
+    }
+  }
+  if (location.pathname.indexOf('/discuss/')===0) {
+    var r = parseQueryString();
+    if (!r.page || r.page==='1') {
+      $('div.x-content>div.uk-comment:first div.uk-comment-body').append('<hr><p class="uk-text-muted">想要问题快速得到解答？分享给朋友试试：</p><p><wb:share-button appkey="1391944217" addition="full" type="button" ralateUid="1658384301" picture_search="false"></wb:share-button></p>');
+    }
+  }
+});
+</script>
+
+<script>
+// article: add share:
+$(function() {
+  if (location.pathname.indexOf('/article/')===0) {
+    $('.x-article-content').find('a[href^=http]').attr('target', '_blank');
+    $('.x-article-content').after('<h3>感觉本站内容不错，读后有收获？</h3><p><a target="_blank" href="http://www.liaoxuefeng.com/webpage/donate" class="uk-button uk-button-primary"><i class="uk-icon-cny"></i> 我要小额赞助，鼓励作者写出更好的文章</a></p><h3>还可以分享给朋友</h3><p><wb:share-button appkey="1391944217" addition="full" type="button" ralateUid="1658384301" picture_search="false" pic="' + $('meta[property="og:image"]').attr('content') + '"></wb:share-button></p>');
+  }
+});
+</script>
+
+<script>
+// all:
+$(function() {
+  $('.x-footer-copyright').find('p').append('<br>由<a target="_blank" href="http://s.click.taobao.com/t?e=m%3D2%26s%3DuVSSwb68TEYcQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClAouhd4loqGpDWNI3LssOJ1ZIW%2FH7aX8LI9nQCCjrrrN3wYAeXhmRFOHMh3DDj7e5Hudn1BbglxZYxUhy8exlzcpAFEHVckI7b93srg%2FL%2FeD3keUEnoKELDlWYetMiZZgV%2BSx6OrKqagyklzFeKMz7Cd4Qek9OyREefaKWlxOHSq5XF%2B87KN7TKeiZ%2BQMlGz6FQ%3D%3D">阿里云</a>托管<br><a href="#0" onclick="location.assign(decodeURIComponent(\'moc.36104%fxlksaA3%otliam\'.split(\'\').reverse().join(\'\')))">广告合作</a>');
+  $('.x-footer').append('<hr><div style="text-align:center"><p>友情链接: <a href="http://www.shi-ci.com/" target="_blank">中华诗词</a> - <a href="http://s.click.taobao.com/t?e=m%3D2%26s%3DjPaT%2Fmi2tL4cQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClAlFz4nQbUpKuV%2FZ67c680w5IW%2FH7aX8LI9nQCCjrrrN3wYAeXhmRFOHMh3DDj7e5Hudn1BbglxZYxUhy8exlzcq9AmARIwX9K%2BnbtOD3UdznPV1H2z0iQv9NkKVMHClW0QbMqOpFMIvnvjQXzzpXdTHGJe8N%2FwNpGw%3D%3D" target="_blank">阿里云</a> - <a href="http://mitpress.mit.edu/sicp/full-text/book/book.html" target="_blank">SICP</a> - <a href="http://www.4clojure.com/" target="_blank">4clojure</a></p></div>');
+});
+</script>
+
+<script>
+// tongji:
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "hm.js-2efddd14a5f2b304677462d06fb4f964.js"/*tpa=http://hm.baidu.com/hm.js?2efddd14a5f2b304677462d06fb4f964*/;
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+$(function() {
+  var x = document.createElement('script');
+  x.src = 'underscore.js'/*tpa=http://www.liaoxuefeng.com/static/js/underscore.js*/;
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(x, s);
+});
+</script>
+
+<!-- END custom_header -->
+</head>
+
+<body>
+    <div class="x-goto-top">
+        <div class="x-arrow"></div>
+        <div class="x-stick"></div>
+    </div>
+
+    <div id="header" class="uk-navbar uk-navbar-attached">
+        <div class="uk-container x-container">
+            <div class="uk-navbar uk-navbar-attached">
+                
+                <ul class="uk-navbar-nav uk-visible-small">
+                    <li><a href="#0" onclick="UIkit.offcanvas.show('#x-offcanvas-left')"><i class="uk-icon-chevron-right"></i></a></li>
+                </ul>
+                
+                <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/%27" tppabs="http://www.liaoxuefeng.com/" class="uk-navbar-brand uk-visible-large">廖雪峰的官方网站</a>
+                <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/%27" tppabs="http://www.liaoxuefeng.com/" class="uk-navbar-brand uk-hidden-large"><i class="uk-icon-home"></i></a>
+                <ul id="ul-navbar" class="uk-navbar-nav uk-hidden-small">
+                    
+                    <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000%27" tppabs="http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000">编程</a></li>
+                    
+                    <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/category/0013738748248885ddf38d8cd1b4803aa74bcda32f853fd000  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/category/0013738748248885ddf38d8cd1b4803aa74bcda32f853fd000%27" tppabs="http://www.liaoxuefeng.com/category/0013738748248885ddf38d8cd1b4803aa74bcda32f853fd000">读书</a></li>
+                    
+                    <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/webpage/java  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/webpage/java%27" tppabs="http://www.liaoxuefeng.com/webpage/java">Java教程</a></li>
+                    
+                    <li><a href="001434446689867b27157e896e74d51a89c25cc8b43bdb3000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000">JavaScript教程</a></li>
+                    
+                    <li><a href="0014316089557264a6b348958f449949df42a6d3a2e542c000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000">Python教程</a></li>
+                    
+                    <li><a href="0013739516305929606dd18361248578c67b8067c8c017b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">Git教程</a></li>
+                    
+                    <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/discuss  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/discuss%27" tppabs="http://www.liaoxuefeng.com/discuss">问答</a></li>
+                    
+                    <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/webpage/donate  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/webpage/donate%27" tppabs="http://www.liaoxuefeng.com/webpage/donate">赞助</a></li>
+                    
+                </ul>
+                
+                <ul class="uk-navbar-nav uk-visible-small">
+                    <li class="uk-parent" data-uk-dropdown>
+                        <a href="#0"><i class="uk-icon-navicon"></i></a>
+                        <div class="uk-dropdown uk-dropdown-navbar">
+                            <ul class="uk-nav uk-nav-navbar">
+                                
+                                <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000%27" tppabs="http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000">编程</a></li>
+                                
+                                <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/category/0013738748248885ddf38d8cd1b4803aa74bcda32f853fd000  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/category/0013738748248885ddf38d8cd1b4803aa74bcda32f853fd000%27" tppabs="http://www.liaoxuefeng.com/category/0013738748248885ddf38d8cd1b4803aa74bcda32f853fd000">读书</a></li>
+                                
+                                <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/webpage/java  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/webpage/java%27" tppabs="http://www.liaoxuefeng.com/webpage/java">Java教程</a></li>
+                                
+                                <li><a href="001434446689867b27157e896e74d51a89c25cc8b43bdb3000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000">JavaScript教程</a></li>
+                                
+                                <li><a href="0014316089557264a6b348958f449949df42a6d3a2e542c000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000">Python教程</a></li>
+                                
+                                <li><a href="0013739516305929606dd18361248578c67b8067c8c017b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">Git教程</a></li>
+                                
+                                <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/discuss  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/discuss%27" tppabs="http://www.liaoxuefeng.com/discuss">问答</a></li>
+                                
+                                <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/webpage/donate  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/webpage/donate%27" tppabs="http://www.liaoxuefeng.com/webpage/donate">赞助</a></li>
+                                
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+                
+
+<!--
+                <div class="uk-navbar-content x-hidden-tiny">
+                    <form id="form-search" class="uk-form uk-margin-remove uk-display-inline-block">
+                        <div class="uk-form-icon">
+                            <i class="uk-icon-search"></i>
+                            <input type="text" placeholder="Search">
+                        </div>
+                    </form>
+                </div>
+-->
+
+                <div class="uk-navbar-flip">
+                    <ul class="uk-navbar-nav">
+                        <li class="uk-parent x-display-if-signin" data-uk-dropdown>
+                            <a href="#0"><i class="uk-icon-user"></i><span class="x-hidden-tiny">&nbsp;</span><span class="x-user-name x-hidden-tiny"></span></a>
+                            <div class="uk-dropdown uk-dropdown-navbar">
+                                <ul class="uk-nav uk-nav-navbar">
+                                    <li><a target="_blank" href="javascript:if(confirm(%27http://www.liaoxuefeng.com/me/profile  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/me/profile%27" tppabs="http://www.liaoxuefeng.com/me/profile"><i class="uk-icon-cogs"></i> Profile</a></li>
+                                    <li class="uk-nav-divider"></li>
+                                    <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/auth/signout  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/auth/signout%27" tppabs="http://www.liaoxuefeng.com/auth/signout"><i class="uk-icon-power-off"></i> Sign Out</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="x-display-if-not-signin uk-hidden-small"><a href="javascript:showSignin()"><i class="uk-icon-sign-in"></i> Sign In</a></li>
+                        <li class="x-display-if-not-signin uk-visible-small"><a href="javascript:showSignin()"><i class="uk-icon-sign-in"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div><!-- // header -->
+
+    <div id="main">
+        <div class="x-placeholder-50"><!-- placeholder --></div>
+        <div class="x-placeholder"><!-- placeholder --></div>
+        <div class="uk-container x-container">
+            <div class="uk-grid">
+                <div class="x-body-before uk-width-1-1">
+                    
+                </div>
+            </div>
+            <div class="uk-grid">
+                <div class="uk-width-1-1">
+                
+                    <div class="x-sidebar-left">
+                        <div class="x-sidebar-left-top">
+                            
+                        </div>
+                        <div class="x-sidebar-left-content">
+                            
+    <ul class="uk-nav uk-nav-side">
+        <li class="uk-nav-header">Index</li>
+    </ul>
+    <ul class="uk-nav uk-nav-side" style="margin-right:-15px;">
+        <li id="0013739516305929606dd18361248578c67b8067c8c017b000"><a href="0013739516305929606dd18361248578c67b8067c8c017b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">Git教程</a></li>
+    
+        <li id="001373962845513aefd77a99f4145f0a2c7a7ca057e7570000" style="margin-left:1em;">
+            <a href="001373962845513aefd77a99f4145f0a2c7a7ca057e7570000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001373962845513aefd77a99f4145f0a2c7a7ca057e7570000">Git简介</a>
+        </li>
+    
+        <li id="00137402760310626208b4f695940a49e5348b689d095fc000" style="margin-left:2em;">
+            <a href="00137402760310626208b4f695940a49e5348b689d095fc000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137402760310626208b4f695940a49e5348b689d095fc000">Git的诞生</a>
+        </li>
+    
+        <li id="001374027586935cf69c53637d8458c9aec27dd546a6cd6000" style="margin-left:2em;">
+            <a href="001374027586935cf69c53637d8458c9aec27dd546a6cd6000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001374027586935cf69c53637d8458c9aec27dd546a6cd6000">集中式vs分布式</a>
+        </li>
+    
+        <li id="00137396287703354d8c6c01c904c7d9ff056ae23da865a000" style="margin-left:1em;">
+            <a href="00137396287703354d8c6c01c904c7d9ff056ae23da865a000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137396287703354d8c6c01c904c7d9ff056ae23da865a000">安装Git</a>
+        </li>
+    
+        <li id="0013743256916071d599b3aed534aaab22a0db6c4e07fd0000" style="margin-left:1em;">
+            <a href="0013743256916071d599b3aed534aaab22a0db6c4e07fd0000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013743256916071d599b3aed534aaab22a0db6c4e07fd0000">创建版本库</a>
+        </li>
+    
+        <li id="0013743858312764dca7ad6d0754f76aa562e3789478044000" style="margin-left:1em;">
+            <a href="0013743858312764dca7ad6d0754f76aa562e3789478044000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013743858312764dca7ad6d0754f76aa562e3789478044000">时光机穿梭</a>
+        </li>
+    
+        <li id="0013744142037508cf42e51debf49668810645e02887691000" style="margin-left:2em;">
+            <a href="0013744142037508cf42e51debf49668810645e02887691000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013744142037508cf42e51debf49668810645e02887691000">版本回退</a>
+        </li>
+    
+        <li id="0013745374151782eb658c5a5ca454eaa451661275886c6000" style="margin-left:2em;">
+            <a href="0013745374151782eb658c5a5ca454eaa451661275886c6000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013745374151782eb658c5a5ca454eaa451661275886c6000">工作区和暂存区</a>
+        </li>
+    
+        <li id="001374829472990293f16b45df14f35b94b3e8a026220c5000" style="margin-left:2em;">
+            <a href="001374829472990293f16b45df14f35b94b3e8a026220c5000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001374829472990293f16b45df14f35b94b3e8a026220c5000">管理修改</a>
+        </li>
+    
+        <li id="001374831943254ee90db11b13d4ba9a73b9047f4fb968d000" style="margin-left:2em;">
+            <a href="001374831943254ee90db11b13d4ba9a73b9047f4fb968d000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001374831943254ee90db11b13d4ba9a73b9047f4fb968d000">撤销修改</a>
+        </li>
+    
+        <li id="0013758392816224cafd33c44b4451887cc941e6716805c000" style="margin-left:2em;">
+            <a href="0013758392816224cafd33c44b4451887cc941e6716805c000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013758392816224cafd33c44b4451887cc941e6716805c000">删除文件</a>
+        </li>
+    
+        <li id="001374385852170d9c7adf13c30429b9660d0eb689dd43a000" style="margin-left:1em;">
+            <a href="001374385852170d9c7adf13c30429b9660d0eb689dd43a000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001374385852170d9c7adf13c30429b9660d0eb689dd43a000">远程仓库</a>
+        </li>
+    
+        <li id="0013752340242354807e192f02a44359908df8a5643103a000" style="margin-left:2em;">
+            <a href="0013752340242354807e192f02a44359908df8a5643103a000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013752340242354807e192f02a44359908df8a5643103a000">添加远程库</a>
+        </li>
+    
+        <li id="001375233990231ac8cf32ef1b24887a5209f83e01cb94b000" style="margin-left:2em;">
+            <a href="001375233990231ac8cf32ef1b24887a5209f83e01cb94b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001375233990231ac8cf32ef1b24887a5209f83e01cb94b000">从远程库克隆</a>
+        </li>
+    
+        <li id="0013743862006503a1c5bf5a783434581661a3cc2084efa000" style="margin-left:1em;">
+            <a href="0013743862006503a1c5bf5a783434581661a3cc2084efa000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013743862006503a1c5bf5a783434581661a3cc2084efa000">分支管理</a>
+        </li>
+    
+        <li id="001375840038939c291467cc7c747b1810aab2fb8863508000" style="margin-left:2em;">
+            <a href="001375840038939c291467cc7c747b1810aab2fb8863508000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001375840038939c291467cc7c747b1810aab2fb8863508000">创建与合并分支</a>
+        </li>
+    
+        <li id="001375840202368c74be33fbd884e71b570f2cc3c0d1dcf000" style="margin-left:2em;">
+            <a href="001375840202368c74be33fbd884e71b570f2cc3c0d1dcf000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001375840202368c74be33fbd884e71b570f2cc3c0d1dcf000">解决冲突</a>
+        </li>
+    
+        <li id="0013758410364457b9e3d821f4244beb0fd69c61a185ae0000" style="margin-left:2em;">
+            <a href="0013758410364457b9e3d821f4244beb0fd69c61a185ae0000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013758410364457b9e3d821f4244beb0fd69c61a185ae0000">分支管理策略</a>
+        </li>
+    
+        <li id="00137602359178794d966923e5c4134bc8bf98dfb03aea3000" style="margin-left:2em;">
+            <a href="00137602359178794d966923e5c4134bc8bf98dfb03aea3000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137602359178794d966923e5c4134bc8bf98dfb03aea3000">Bug分支</a>
+        </li>
+    
+        <li id="001376026233004c47f22a16d1f4fa289ce45f14bbc8f11000" style="margin-left:2em;">
+            <a href="001376026233004c47f22a16d1f4fa289ce45f14bbc8f11000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001376026233004c47f22a16d1f4fa289ce45f14bbc8f11000">Feature分支</a>
+        </li>
+    
+        <li id="0013760174128707b935b0be6fc4fc6ace66c4f15618f8d000" style="margin-left:2em;">
+            <a href="0013760174128707b935b0be6fc4fc6ace66c4f15618f8d000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013760174128707b935b0be6fc4fc6ace66c4f15618f8d000">多人协作</a>
+        </li>
+    
+        <li id="0013762144381812a168659b3dd4610b4229d81de5056cc000" style="margin-left:1em;">
+            <a href="0013762144381812a168659b3dd4610b4229d81de5056cc000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013762144381812a168659b3dd4610b4229d81de5056cc000">标签管理</a>
+        </li>
+    
+        <li id="001376951758572072ce1dc172b4178b910d31bc7521ee4000" style="margin-left:2em;">
+            <a href="001376951758572072ce1dc172b4178b910d31bc7521ee4000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001376951758572072ce1dc172b4178b910d31bc7521ee4000">创建标签</a>
+        </li>
+    
+        <li id="001376951885068a0ac7d81c3a64912b35a59b58a1d926b000" style="margin-left:2em;">
+            <a href="001376951885068a0ac7d81c3a64912b35a59b58a1d926b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001376951885068a0ac7d81c3a64912b35a59b58a1d926b000">操作标签</a>
+        </li>
+    
+        <li id="00137628548491051ccfaef0ccb470894c858999603fedf000" style="margin-left:1em;">
+            <a href="00137628548491051ccfaef0ccb470894c858999603fedf000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137628548491051ccfaef0ccb470894c858999603fedf000">使用GitHub</a>
+        </li>
+    
+        <li id="00137621280731812dec22ecc9b44f4b2ca1c680f181a5b000" style="margin-left:1em;">
+            <a href="00137621280731812dec22ecc9b44f4b2ca1c680f181a5b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137621280731812dec22ecc9b44f4b2ca1c680f181a5b000">自定义Git</a>
+        </li>
+    
+        <li id="0013758404317281e54b6f5375640abbb11e67be4cd49e0000" style="margin-left:2em;">
+            <a href="0013758404317281e54b6f5375640abbb11e67be4cd49e0000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013758404317281e54b6f5375640abbb11e67be4cd49e0000">忽略特殊文件</a>
+        </li>
+    
+        <li id="001375234012342f90be1fc4d81446c967bbdc19e7c03d3000" style="margin-left:2em;">
+            <a href="001375234012342f90be1fc4d81446c967bbdc19e7c03d3000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001375234012342f90be1fc4d81446c967bbdc19e7c03d3000">配置别名</a>
+        </li>
+    
+        <li id="00137583770360579bc4b458f044ce7afed3df579123eca000" style="margin-left:2em;">
+            <a href="00137583770360579bc4b458f044ce7afed3df579123eca000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137583770360579bc4b458f044ce7afed3df579123eca000">搭建Git服务器</a>
+        </li>
+    
+        <li id="00137586810169600f39e17409a4358b1ac0d3621356287000" style="margin-left:1em;">
+            <a href="00137586810169600f39e17409a4358b1ac0d3621356287000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137586810169600f39e17409a4358b1ac0d3621356287000">期末总结</a>
+        </li>
+    
+    </ul>
+    <div class="x-placeholder"></div>
+
+                        </div>
+                        <div class="x-sidebar-left-bottom">
+                            <h3>关于作者</h3>
+<iframe width="100%" height="90" class="share_self"  frameborder="0" scrolling="no" src="index.php-language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=5&isTitle=0&noborder=0&isWeibo=0&isFans=0&uid=1658384301&verifier=078cedea&colors=0593d3,ffffff,666666,0593d3,0477ab&dpc=1" tppabs="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=5&isTitle=0&noborder=0&isWeibo=0&isFans=0&uid=1658384301&verifier=078cedea&colors=0593d3,ffffff,666666,0593d3,0477ab&dpc=1"></iframe>
+
+<div class="x-promo-b" style="width:100%;overflow-x:hidden;margin-bottom:5px"></div>
+
+<div style="width:100%;overflow-x:hidden;">
+<script async src="adsbygoogle.js" tppabs="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 300x600-lxf -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:300px;height:600px"
+     data-ad-client="ca-pub-6727358730461554"
+     data-ad-slot="4769867116"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div style="width:100%;overflow-x:hidden;">
+<script type="text/javascript">
+    /*300x250 @baidu*/
+    var cpro_id = "u2060917";
+</script>
+<script src="c.js" tppabs="http://cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript"></script>
+</div>
+
+                        </div>
+                    </div>
+                
+                
+
+                    <div class="x-center">
+                        <div>
+                            
+                        </div>
+                        <div class="x-content" style="width:100%">
+                            
+    <h4>忽略特殊文件</h4>
+    <div class="x-wiki-info"><span>Reads: 168647</span></div>
+    <hr>
+    <div class="x-wiki-content">
+        <p>有些时候，你必须把某些文件放到Git工作目录中，但又不能提交它们，比如保存了数据库密码的配置文件啦，等等，每次<code>git status</code>都会显示<code>Untracked files ...</code>，有强迫症的童鞋心里肯定不爽。</p>
+<p>好在Git考虑到了大家的感受，这个问题解决起来也很简单，在Git工作区的根目录下创建一个特殊的<code>.gitignore</code>文件，然后把要忽略的文件名填进去，Git就会自动忽略这些文件。</p>
+<p>不需要从头写<code>.gitignore</code>文件，GitHub已经为我们准备了各种配置文件，只需要组合一下就可以使用了。所有配置文件可以直接在线浏览：<a href="javascript:if(confirm(%27https://github.com/github/gitignore  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27https://github.com/github/gitignore%27" tppabs="https://github.com/github/gitignore">https://github.com/github/gitignore</a></p>
+<p>忽略文件的原则是：</p>
+<ol>
+<li>忽略操作系统自动生成的文件，比如缩略图等；</li>
+<li>忽略编译生成的中间文件、可执行文件等，也就是如果一个文件是通过另一个文件自动生成的，那自动生成的文件就没必要放进版本库，比如Java编译产生的<code>.class</code>文件；</li>
+<li>忽略你自己的带有敏感信息的配置文件，比如存放口令的配置文件。</li>
+</ol>
+<p>举个例子：</p>
+<p>假设你在Windows下进行Python开发，Windows会自动在有图片的目录下生成隐藏的缩略图文件，如果有自定义目录，目录下就会有<code>Desktop.ini</code>文件，因此你需要忽略Windows自动生成的垃圾文件：</p>
+<pre><code># Windows:
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+</code></pre><p>然后，继续忽略Python编译产生的<code>.pyc</code>、<code>.pyo</code>、<code>dist</code>等文件或目录：</p>
+<pre><code># Python:
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+dist
+build
+</code></pre><p>加上你自己定义的文件，最终得到一个完整的<code>.gitignore</code>文件，内容如下：</p>
+<pre><code># Windows:
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Python:
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+dist
+build
+
+# My configurations:
+db.ini
+deploy_key_rsa
+</code></pre><p>最后一步就是把<code>.gitignore</code>也提交到Git，就完成了！当然检验<code>.gitignore</code>的标准是<code>git status</code>命令是不是说<code>working directory clean</code>。</p>
+<p>使用Windows的童鞋注意了，如果你在资源管理器里新建一个<code>.gitignore</code>文件，它会非常弱智地提示你必须输入文件名，但是在文本编辑器里“保存”或者“另存为”就可以把文件保存为<code>.gitignore</code>了。</p>
+<p>有些时候，你想添加一个文件到Git，但发现添加不了，原因是这个文件被<code>.gitignore</code>忽略了：</p>
+<pre><code>$ git add App.class
+The following paths are ignored by one of your .gitignore files:
+App.class
+Use -f if you really want to add them.
+</code></pre><p>如果你确实想添加该文件，可以用<code>-f</code>强制添加到Git：</p>
+<pre><code>$ git add -f App.class
+</code></pre><p>或者你发现，可能是<code>.gitignore</code>写得有问题，需要找出来到底哪个规则写错了，可以用<code>git check-ignore</code>命令检查：</p>
+<pre><code>$ git check-ignore -v App.class
+.gitignore:3:*.class    App.class
+</code></pre><p>Git会告诉我们，<code>.gitignore</code>的第3行规则忽略了该文件，于是我们就可以知道应该修订哪个规则。</p>
+<h3 id="-">小结</h3>
+<ul>
+<li><p>忽略某些文件时，需要编写<code>.gitignore</code>；</p>
+</li>
+<li><p><code>.gitignore</code>文件本身要放到版本库里，并且可以对<code>.gitignore</code>做版本管理！</p>
+</li>
+</ul>
+
+    </div>
+    <hr>
+    <div id="x-wiki-prev-next" class="uk-clearfix uk-margin-left uk-margin-right">
+    </div>
+    <hr>
+
+    <div class="x-anchor"><a name="comments"></a></div>
+
+    <h3>Comments</h3>
+
+    <ul id="x-comment-list" class="uk-comment-list">
+    </ul>
+
+    <h3>Make a Comment</h3>
+
+    <div class="x-display-if-not-signin">
+        <p><button type="button" class="uk-button" onclick="showSignin()"><i class="uk-icon-signin"></i> Sign In to Make a Comment</button></p>
+    </div>
+
+    <div id="x-comment-area"></div>
+
+
+                        </div>
+                        <div>
+                            <div id="the-promos" class="uk-clearfix" style="margin:15px 0">
+
+<div style="width:336px;height:280px;float:left;">
+<script async src="adsbygoogle.js" tppabs="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- lxf-336x280 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-6727358730461554"
+     data-ad-slot="8492060710"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div style="width:336px;height:280px;float:left;">
+<script async src="adsbygoogle.js" tppabs="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- lxf-336x280 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-6727358730461554"
+     data-ad-slot="8492060710"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div style="width:336px;height:280px;float:left;">
+<script type="text/javascript">
+    /*336x280 @baidu*/
+    var cpro_id = "u2068816";
+</script>
+<script src="c.js" tppabs="http://cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript"></script>
+</div>
+
+<div style="width:336px;height:280px;float:left;">
+<script type="text/javascript">
+    /*336x280 @baidu*/
+    var cpro_id = "u2068816";
+</script>
+<script src="c.js" tppabs="http://cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript"></script>
+</div>
+
+
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="uk-grid">
+                <div class="x-body-after uk-width-1-1">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="x-offcanvas-left" class="uk-offcanvas">
+        <div class="uk-offcanvas-bar">
+            <div class="uk-panel">
+                
+    <ul class="uk-nav uk-nav-side">
+        <li class="uk-nav-header">Index</li>
+    </ul>
+    <ul class="uk-nav uk-nav-side">
+        <li id="off-0013739516305929606dd18361248578c67b8067c8c017b000"><a href="0013739516305929606dd18361248578c67b8067c8c017b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">Git教程</a></li>
+    
+        <li id="off-001373962845513aefd77a99f4145f0a2c7a7ca057e7570000" style="margin-left:1em;">
+            <a href="001373962845513aefd77a99f4145f0a2c7a7ca057e7570000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001373962845513aefd77a99f4145f0a2c7a7ca057e7570000">Git简介</a>
+        </li>
+    
+        <li id="off-00137402760310626208b4f695940a49e5348b689d095fc000" style="margin-left:2em;">
+            <a href="00137402760310626208b4f695940a49e5348b689d095fc000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137402760310626208b4f695940a49e5348b689d095fc000">Git的诞生</a>
+        </li>
+    
+        <li id="off-001374027586935cf69c53637d8458c9aec27dd546a6cd6000" style="margin-left:2em;">
+            <a href="001374027586935cf69c53637d8458c9aec27dd546a6cd6000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001374027586935cf69c53637d8458c9aec27dd546a6cd6000">集中式vs分布式</a>
+        </li>
+    
+        <li id="off-00137396287703354d8c6c01c904c7d9ff056ae23da865a000" style="margin-left:1em;">
+            <a href="00137396287703354d8c6c01c904c7d9ff056ae23da865a000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137396287703354d8c6c01c904c7d9ff056ae23da865a000">安装Git</a>
+        </li>
+    
+        <li id="off-0013743256916071d599b3aed534aaab22a0db6c4e07fd0000" style="margin-left:1em;">
+            <a href="0013743256916071d599b3aed534aaab22a0db6c4e07fd0000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013743256916071d599b3aed534aaab22a0db6c4e07fd0000">创建版本库</a>
+        </li>
+    
+        <li id="off-0013743858312764dca7ad6d0754f76aa562e3789478044000" style="margin-left:1em;">
+            <a href="0013743858312764dca7ad6d0754f76aa562e3789478044000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013743858312764dca7ad6d0754f76aa562e3789478044000">时光机穿梭</a>
+        </li>
+    
+        <li id="off-0013744142037508cf42e51debf49668810645e02887691000" style="margin-left:2em;">
+            <a href="0013744142037508cf42e51debf49668810645e02887691000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013744142037508cf42e51debf49668810645e02887691000">版本回退</a>
+        </li>
+    
+        <li id="off-0013745374151782eb658c5a5ca454eaa451661275886c6000" style="margin-left:2em;">
+            <a href="0013745374151782eb658c5a5ca454eaa451661275886c6000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013745374151782eb658c5a5ca454eaa451661275886c6000">工作区和暂存区</a>
+        </li>
+    
+        <li id="off-001374829472990293f16b45df14f35b94b3e8a026220c5000" style="margin-left:2em;">
+            <a href="001374829472990293f16b45df14f35b94b3e8a026220c5000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001374829472990293f16b45df14f35b94b3e8a026220c5000">管理修改</a>
+        </li>
+    
+        <li id="off-001374831943254ee90db11b13d4ba9a73b9047f4fb968d000" style="margin-left:2em;">
+            <a href="001374831943254ee90db11b13d4ba9a73b9047f4fb968d000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001374831943254ee90db11b13d4ba9a73b9047f4fb968d000">撤销修改</a>
+        </li>
+    
+        <li id="off-0013758392816224cafd33c44b4451887cc941e6716805c000" style="margin-left:2em;">
+            <a href="0013758392816224cafd33c44b4451887cc941e6716805c000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013758392816224cafd33c44b4451887cc941e6716805c000">删除文件</a>
+        </li>
+    
+        <li id="off-001374385852170d9c7adf13c30429b9660d0eb689dd43a000" style="margin-left:1em;">
+            <a href="001374385852170d9c7adf13c30429b9660d0eb689dd43a000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001374385852170d9c7adf13c30429b9660d0eb689dd43a000">远程仓库</a>
+        </li>
+    
+        <li id="off-0013752340242354807e192f02a44359908df8a5643103a000" style="margin-left:2em;">
+            <a href="0013752340242354807e192f02a44359908df8a5643103a000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013752340242354807e192f02a44359908df8a5643103a000">添加远程库</a>
+        </li>
+    
+        <li id="off-001375233990231ac8cf32ef1b24887a5209f83e01cb94b000" style="margin-left:2em;">
+            <a href="001375233990231ac8cf32ef1b24887a5209f83e01cb94b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001375233990231ac8cf32ef1b24887a5209f83e01cb94b000">从远程库克隆</a>
+        </li>
+    
+        <li id="off-0013743862006503a1c5bf5a783434581661a3cc2084efa000" style="margin-left:1em;">
+            <a href="0013743862006503a1c5bf5a783434581661a3cc2084efa000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013743862006503a1c5bf5a783434581661a3cc2084efa000">分支管理</a>
+        </li>
+    
+        <li id="off-001375840038939c291467cc7c747b1810aab2fb8863508000" style="margin-left:2em;">
+            <a href="001375840038939c291467cc7c747b1810aab2fb8863508000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001375840038939c291467cc7c747b1810aab2fb8863508000">创建与合并分支</a>
+        </li>
+    
+        <li id="off-001375840202368c74be33fbd884e71b570f2cc3c0d1dcf000" style="margin-left:2em;">
+            <a href="001375840202368c74be33fbd884e71b570f2cc3c0d1dcf000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001375840202368c74be33fbd884e71b570f2cc3c0d1dcf000">解决冲突</a>
+        </li>
+    
+        <li id="off-0013758410364457b9e3d821f4244beb0fd69c61a185ae0000" style="margin-left:2em;">
+            <a href="0013758410364457b9e3d821f4244beb0fd69c61a185ae0000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013758410364457b9e3d821f4244beb0fd69c61a185ae0000">分支管理策略</a>
+        </li>
+    
+        <li id="off-00137602359178794d966923e5c4134bc8bf98dfb03aea3000" style="margin-left:2em;">
+            <a href="00137602359178794d966923e5c4134bc8bf98dfb03aea3000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137602359178794d966923e5c4134bc8bf98dfb03aea3000">Bug分支</a>
+        </li>
+    
+        <li id="off-001376026233004c47f22a16d1f4fa289ce45f14bbc8f11000" style="margin-left:2em;">
+            <a href="001376026233004c47f22a16d1f4fa289ce45f14bbc8f11000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001376026233004c47f22a16d1f4fa289ce45f14bbc8f11000">Feature分支</a>
+        </li>
+    
+        <li id="off-0013760174128707b935b0be6fc4fc6ace66c4f15618f8d000" style="margin-left:2em;">
+            <a href="0013760174128707b935b0be6fc4fc6ace66c4f15618f8d000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013760174128707b935b0be6fc4fc6ace66c4f15618f8d000">多人协作</a>
+        </li>
+    
+        <li id="off-0013762144381812a168659b3dd4610b4229d81de5056cc000" style="margin-left:1em;">
+            <a href="0013762144381812a168659b3dd4610b4229d81de5056cc000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013762144381812a168659b3dd4610b4229d81de5056cc000">标签管理</a>
+        </li>
+    
+        <li id="off-001376951758572072ce1dc172b4178b910d31bc7521ee4000" style="margin-left:2em;">
+            <a href="001376951758572072ce1dc172b4178b910d31bc7521ee4000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001376951758572072ce1dc172b4178b910d31bc7521ee4000">创建标签</a>
+        </li>
+    
+        <li id="off-001376951885068a0ac7d81c3a64912b35a59b58a1d926b000" style="margin-left:2em;">
+            <a href="001376951885068a0ac7d81c3a64912b35a59b58a1d926b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001376951885068a0ac7d81c3a64912b35a59b58a1d926b000">操作标签</a>
+        </li>
+    
+        <li id="off-00137628548491051ccfaef0ccb470894c858999603fedf000" style="margin-left:1em;">
+            <a href="00137628548491051ccfaef0ccb470894c858999603fedf000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137628548491051ccfaef0ccb470894c858999603fedf000">使用GitHub</a>
+        </li>
+    
+        <li id="off-00137621280731812dec22ecc9b44f4b2ca1c680f181a5b000" style="margin-left:1em;">
+            <a href="00137621280731812dec22ecc9b44f4b2ca1c680f181a5b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137621280731812dec22ecc9b44f4b2ca1c680f181a5b000">自定义Git</a>
+        </li>
+    
+        <li id="off-0013758404317281e54b6f5375640abbb11e67be4cd49e0000" style="margin-left:2em;">
+            <a href="0013758404317281e54b6f5375640abbb11e67be4cd49e0000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013758404317281e54b6f5375640abbb11e67be4cd49e0000">忽略特殊文件</a>
+        </li>
+    
+        <li id="off-001375234012342f90be1fc4d81446c967bbdc19e7c03d3000" style="margin-left:2em;">
+            <a href="001375234012342f90be1fc4d81446c967bbdc19e7c03d3000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001375234012342f90be1fc4d81446c967bbdc19e7c03d3000">配置别名</a>
+        </li>
+    
+        <li id="off-00137583770360579bc4b458f044ce7afed3df579123eca000" style="margin-left:2em;">
+            <a href="00137583770360579bc4b458f044ce7afed3df579123eca000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137583770360579bc4b458f044ce7afed3df579123eca000">搭建Git服务器</a>
+        </li>
+    
+        <li id="off-00137586810169600f39e17409a4358b1ac0d3621356287000" style="margin-left:1em;">
+            <a href="00137586810169600f39e17409a4358b1ac0d3621356287000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137586810169600f39e17409a4358b1ac0d3621356287000">期末总结</a>
+        </li>
+    
+    </ul>
+    <div class="x-placeholder"></div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div id="footer">
+        <div class="x-footer uk-container x-container">
+            <hr>
+            <div class="uk-grid">
+                <div class="x-footer-copyright uk-width-small-1-2 uk-width-medium-1-3">
+                    <p>
+                        <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/%27" tppabs="http://www.liaoxuefeng.com/">廖雪峰的官方网站</a>&copy;2015
+                        <br>
+                        Powered by <a href="javascript:if(confirm(%27http://js.itranswarp.com/  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://js.itranswarp.com/%27" tppabs="http://js.itranswarp.com/" target="_blank">iTranswarp.js</a>
+                    </p>
+                </div>
+                <div class="uk-width-small-1-2 uk-width-medium-1-3 x-hidden-tiny">
+                    <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/feed  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/feed%27" tppabs="http://www.liaoxuefeng.com/feed" target="_blank" class="uk-icon-button uk-icon-rss" data-uk-tooltip title="Subscribe the RSS"></a>
+                    <a href="javascript:if(confirm(%27https://github.com/michaelliao/itranswarp.js  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27https://github.com/michaelliao/itranswarp.js%27" tppabs="https://github.com/michaelliao/itranswarp.js" target="_blank" class="uk-icon-button uk-icon-github" data-uk-tooltip title="View source code on GitHub"></a>
+                    <a href="javascript:if(confirm(%27https://twitter.com/liaoxuefeng  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27https://twitter.com/liaoxuefeng%27" tppabs="https://twitter.com/liaoxuefeng" target="_blank" class="uk-icon-button uk-icon-twitter" data-uk-tooltip title="Follow author on Twitter"></a>
+                    <a href="javascript:if(confirm(%27http://www.weibo.com/liaoxuefeng  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.weibo.com/liaoxuefeng%27" tppabs="http://www.weibo.com/liaoxuefeng" target="_blank" class="uk-icon-button uk-icon-weibo uk-visible-large uk-hidden-medium" data-uk-tooltip title="Follow author on Weibo"></a>
+                </div>
+                <div class="uk-width-medium-1-3 uk-hidden-small">
+                    <p>
+                        <a href="javascript:if(confirm(%27https://github.com/michaelliao/itranswarp.js/issues  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27https://github.com/michaelliao/itranswarp.js/issues%27" tppabs="https://github.com/michaelliao/itranswarp.js/issues" target="_blank">Feedback</a>
+                        <br>
+                        <a href="javascript:if(confirm(%27https://github.com/michaelliao/itranswarp.js/blob/master/LICENSE  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27https://github.com/michaelliao/itranswarp.js/blob/master/LICENSE%27" tppabs="https://github.com/michaelliao/itranswarp.js/blob/master/LICENSE" target="_blank">License</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-signin" class="uk-modal">
+        <div class="uk-modal-dialog">
+            <a class="uk-modal-close uk-close"></a>
+            <div class="uk-modal-header">
+                <h2>Please Sign In</h2>
+            </div>
+            <p>You can sign in directly without register:</p>
+            
+            <h3><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/auth/from/weibo  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/auth/from/weibo%27" tppabs="http://www.liaoxuefeng.com/auth/from/weibo"><i class="uk-icon-weibo"></i> 使用新浪微博登录</a></h3>
+            
+            <p>You need authorize to allow connect to your social passport for the first time.</p>
+        </div>
+    </div>
+
+    <div id="oldBrowser">
+        <div class="uk-alert uk-alert-danger" data-uk-alert>
+            <a href="#0" class="uk-alert-close uk-close"></a>
+            <p>
+                WARNING: You are using an old browser that does not support HTML5.
+                Please choose a modern browser (<a href="javascript:if(confirm(%27http://www.google.com/chrome  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.google.com/chrome%27" tppabs="http://www.google.com/chrome" target="_blank">Chrome</a> / <a href="javascript:if(confirm(%27http://www.mozilla.org/firefox/  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.mozilla.org/firefox/%27" tppabs="http://www.mozilla.org/firefox/" target="_blank">Firefox</a> / <a href="javascript:if(confirm(%27http://www.apple.com/safari/  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.apple.com/safari/%27" tppabs="http://www.apple.com/safari/" target="_blank">Sarafi</a>) to get a good experience.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html xmlns:itranswarp="http://www.itranswarp.com/" xmlns:wb="http://open.weibo.com/wb">
+<!--
+
+-->
+<head>
+    <meta charset="utf-8" />
+    <title>AJAX - 廖雪峰的官方网站</title>
+    <meta name="viewport" content="width=device-width" />
+    <meta name="keywords" content="javascript,node,jquery,git,python,java,sql,linux,ios,android,教程,软件,编程,开发,运维,云计算,网络,互联网" />
+    <meta name="description" content="研究互联网产品和技术，提供原创中文精品教程" />
+    <meta property="x-nav" content=" /wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 " />
+    <link rel="alternate" href="/feed" title="廖雪峰的官方网站" type="application/rss+xml" />
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499861493e7c35be5e0864769a2c06afb4754acc6000" />
+    <meta property="og:title" content="AJAX" />
+    <meta property="og:description" content="迈向全栈工程师之路的JavaScript教程" />
+    <meta property="og:image" content="http://www.liaoxuefeng.com/files/attachments/0014355670304100cdaa4e7e651474d9672ed73797378bd000/l" />
+
+    <!-- BEGIN CSS COMPRESS -->
+    <link rel="stylesheet" href="codemirror.css" tppabs="http://www.liaoxuefeng.com/static/themes/default/css/codemirror.css" />
+    <link rel="stylesheet" href="highlight.css" tppabs="http://www.liaoxuefeng.com/static/themes/default/css/highlight.css" />
+    <link rel="stylesheet" href="itranswarp.css" tppabs="http://www.liaoxuefeng.com/static/themes/default/css/itranswarp.css" />
+    <!-- END CSS COMPRESS -->
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="ie.css" tppabs="http://www.liaoxuefeng.com/static/themes/default/css/ie.css" />
+    <![endif]-->
+    
+    <script src="all.js" tppabs="http://www.liaoxuefeng.com/static/themes/default/js/all.js"></script>
+    
+    <script id="tplComment" type="text/plain">
+        <div class="uk-comment">
+            <div class="uk-comment-header" style="margin-bottom:0">
+                <a target="_blank" href="http://www.liaoxuefeng.com/user/{ user.id }"><img class="uk-comment-avatar uk-border-circle x-avatar" src="{ user.image_url }" width="50" height="50" alt=""></a>
+                <h4 class="uk-comment-title"><a target="_blank" href="http://www.liaoxuefeng.com/discuss/{ board_id }/{ id }">{ name }</a></h4>
+                <div class="uk-comment-meta"><a target="_blank" href="http://www.liaoxuefeng.com/user/{ user.id }">{ user.name }</a> created at { created_at.toSmartDate() }, Last updated at { updated_at.toSmartDate() }</div>
+            </div>
+            <div class="uk-comment-body x-auto-content">
+                { content|safe }
+            </div>
+        </div>
+    </script>
+
+    <script id="tplCommentReply" type="text/plain">
+        <div class="uk-comment">
+            <div class="uk-comment-header" style="margin-bottom:0">
+                <a target="_blank" href="http://www.liaoxuefeng.com/user/{ user.id }"><img class="uk-comment-avatar uk-border-circle x-avatar" src="{ user.image_url }" width="50" height="50" alt=""></a>
+                <div class="uk-comment-meta"><a target="_blank" href="http://www.liaoxuefeng.com/user/{ user.id }">{ user.name }</a></div>
+                <div class="uk-comment-meta">Created at { created_at.toSmartDate() }, Last updated at { updated_at.toSmartDate() }</div>
+            </div>
+            <div class="uk-comment-body x-auto-content">
+                { content|safe }
+            </div>
+        </div>
+    </script>
+
+    <script id="tplCommentInfo" type="text/plain">
+        <li>
+            <div class="x-comment-info">
+                <hr>
+                <a target="_blank" class="uk-button uk-button-small" href="http://www.liaoxuefeng.com/discuss/{ board_id }/{ id }"><i class="uk-icon-list-ul"></i> View Full Discuss</a>
+                &nbsp;
+                <a target="_blank" class="uk-button uk-button-small" href="http://www.liaoxuefeng.com/discuss/{ board_id }/{ id }#reply"><i class="uk-icon-reply"></i> Reply This Topic</a>
+            </div>
+        </li>
+    </script>
+
+    <script id="tplCommentArea" type="text/plain">
+        <div class="x-display-if-signin">
+            <p><button id="comment-make-button" type="button" class="uk-button uk-button-primary"><i class="uk-icon-comment"></i> Make a Comment</button></p>
+            <form id="comment-form" class="uk-form" style="display:none;">
+                <fieldset>
+                    <div class="uk-alert uk-alert-danger" style="display:none"></div>
+                    <div class="uk-form-row">
+                        <label>Title:</label>
+                    </div>
+                    <div class="uk-form-row">
+                        <input type="text" name="name" maxlength="100" style="width:100%">
+                    </div>
+                    <div class="uk-form-row">
+                        <label>Content:</label>
+                    </div>
+                    <div class="uk-form-row x-textarea">
+                    </div>
+                    <div class="uk-form-row">
+                        <button type="submit" class="uk-button uk-button-primary"><i class="uk-icon-check"></i> Post</button>
+                        &nbsp;&nbsp;
+                        <button type="button" class="uk-button x-cancel"><i class="uk-icon-close"></i> Cancel</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </script>
+
+    <style id="x-doc-style">
+
+        .x-display-if-signin { display: none; }
+
+    </style>
+    <script>
+        var g_time = parseFloat('1479159325648');
+        var g_signins = [{"id":"weibo","icon":"weibo","name":"使用新浪微博登录"}];
+//
+        var g_user = null;
+//
+    </script>
+
+
+
+
+
+    
+    
+<style>
+.x-wiki-visible {
+    display: block;
+}
+</style>
+
+<script>
+loadComments('001434499861493e7c35be5e0864769a2c06afb4754acc6000');
+
+var
+    comment_type = 'wikipage',
+    comment_ref_id = '001434499861493e7c35be5e0864769a2c06afb4754acc6000',
+    comment_tag = 'javascript';
+
+function onAuthSuccess() {
+    initCommentArea(comment_type, comment_ref_id, comment_tag);
+}
+
+$(function () {
+    if (g_user !== null) {
+        initCommentArea(comment_type, comment_ref_id, comment_tag);
+    }
+});
+
+$(function () {
+    var
+        current = $('#001434499861493e7c35be5e0864769a2c06afb4754acc6000'),
+        prev = current.prev().find('a'),
+        next = current.next().find('a'),
+        L = [];
+    current.addClass('uk-active');
+    $('#off-001434499861493e7c35be5e0864769a2c06afb4754acc6000').addClass('uk-active');
+    L.push('<div class="uk-clearfix uk-margin-left uk-margin-right">');
+    if (prev.length > 0) {
+        L.push('<span class="uk-float-left"><i class="uk-icon-chevron-left"></i> <a href="');
+        L.push(prev.attr('href'));
+        L.push('">');
+        L.push(encodeHtml(prev.text()));
+        L.push('</a></span>');
+    }
+    if (next.length > 0) {
+        L.push('<span class="uk-float-right"><a href="');
+        L.push(next.attr('href'));
+        L.push('">');
+        L.push(encodeHtml(next.text()));
+        L.push('</a> <i class="uk-icon-chevron-right"></i></span>')
+    }
+    L.push('</div>');
+    $('#x-wiki-prev-next').html(L.join(''));
+});
+</script>
+
+
+<style>
+.x-center {
+    margin: 0;
+}
+
+
+.x-center {
+    margin-left: 316px;
+    padding-left: 15px;
+}
+
+
+
+
+</style>
+
+<!-- BEGIN custom_header -->
+<script src="wb.js" tppabs="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+// git: add app link:
+$(function() {
+  if (location.pathname.indexOf('/wiki/0013739516305929606dd18361248578c67b8067c8c017b000')===0) {
+    $('.x-wiki-info').parent().css('position', 'relative').append('<a href="https://itunes.apple.com/cn/app/git-jiao-cheng/id876420437" target="_blank" style="display:block;width:135px;height:40px;position:absolute;right:10px;top:10px;"><img src="download-on-the-app-store.png"/*tpa=http://www.liaoxuefeng.com/static/img/download-on-the-app-store.png*/ /></a>');
+  }
+  // add new:
+  $('#ul-navbar a[href="http://www.liaoxuefeng.com/webpage/java"]').parent().append('<img style="position:absolute;right:-10px;top:3px;z-index:999" src="/files/attachments/001477919415261ebc91072244149e0ab69f60ae2abe39f000/l">');
+});
+</script>
+
+<script>
+// python 3: add 2.7 link:
+$(function() {
+  if (location.pathname.indexOf('/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000')===0) {
+    $('.x-wiki-info').parent().css('position', 'relative').append('<a href="001374738125095c955c1e6d8bb493182103fac9270762a000.htm"/*tpa=http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000*/ target="_blank" style="display:block;position:absolute;right:10px;top:10px;">2.7旧版教程</a>');
+  }
+});
+</script>
+
+<script>
+// python 2.7: add py3 link:
+$(function() {
+  if (location.pathname.indexOf('/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000')===0) {
+    $('#main .x-container').prepend('<div class="uk-alert uk-alert-danger">您目前正在学习的2.7版本的Python教程已过期，请立刻前往最新的Python 3 教程：<a href="0014316089557264a6b348958f449949df42a6d3a2e542c000.htm"/*tpa=http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000*/ class="uk-button uk-button-success">我要学 Python 3</a></div>');
+  }
+});
+</script>
+
+<script>
+// the ad:
+$(function() {
+  var _a_pros = [
+    {
+      id: 'zhufeng',
+      href: 'http://www.zhufengpeixun.cn/customize/node/index.html',
+      img: '/files/attachments/00145587235874321e448795b804a1e8356eb97a33f81c5000/0'
+    },
+    {
+      id: 'maiziedu',
+      href: 'http://www.maizitime.com/pages/ad12/python/kecheng.html?yy=lxfpy',
+      img: '/files/attachments/001468226657174e6b109d28e84442798a2a4451e7b2dea000/0'
+    },
+    {
+      id: 'xitu',
+      href: 'http://gold.xitu.io/welcome?utm_source=liaoxuefeng&utm_medium=banner&utm_content=gaoshou&utm_campaign=q3_personal',
+      img: '/files/attachments/00146917760141137418dc990d3459d99ea875458da0ea4000/0'
+    },
+    {
+      id: 'julyedu',
+      href: 'https://www.julyedu.com/course/getDetail/46?source=lxf',
+      img: '/files/attachments/001478055964356b6b89e710c5545219e0af3c9483662f3000/0'
+    }
+  ];
+
+/************
+  var _b_pros = {
+    id: 'dotcloud',
+    href: 'http://msa-summit.com/?daocloud',
+    img: '/files/attachments/001470127437945450d8dc4107f47af8c2564649939f4f6000/0'
+  };
+
+  var _b_pros = {
+    id: 'magua',
+    href: 'http://mooc.study.163.com/smartSpec/detail/1001180001.htm?from=liaoxuefeng',
+    img: '/files/attachments/0014753978861824ed11e0bfd124daa978fb61fe5f991ad000/0'
+  };
+************/
+
+  var _b_pros = {
+    id: 'julyedu',
+    href: 'https://www.julyedu.com/course/getDetail/47?from=liaoxuefeng',
+    img: '/files/attachments/001476779954421e3a6a9f1872d4db283fade7b6989ebb2000/0'
+  };
+
+  $('div.x-promo-b').html('<div style="width:300px;height:600px"><a target="_blank" href="' + _b_pros.href + '" onclick="_hmt.push([\'_trackEvent\', \'' + _b_pros.id + '\', \'click\', \'clicked\']);"><img src="' + _b_pros.img + '" style="width:300px;height:600px"></a></div>');
+
+  var i, s = '';
+  for (i=0; i<_a_pros.length; i++) {
+    s = s + '<div style="width:336px;height:280px;float:left;"><a target="_blank" href="' + _a_pros[i].href + '" onclick="_hmt.push([\'_trackEvent\', \'' + _a_pros[i].id + '\', \'click\', \'clicked\']);"><img src="' + _a_pros[i].img + '" style="width:336px;height:280px"></a></div>';
+  }
+  if (location.pathname.indexOf('/wiki/')===0 || location.pathname.indexOf('/article/')===0) {
+    s = s + '<div style="clear: both;"></div>';
+    $('.x-wiki-content').after(s);
+    $('.x-article-content').after(s);
+  }
+  else {
+    $('#the-promos').prepend(s);
+  }
+});
+</script>
+
+<script>
+// add share:
+$(function() {
+  if (location.pathname.indexOf('/wiki/')===0) {
+    $('.x-wiki-content').find('a[href^=http]').attr('target', '_blank');
+    if (!window.hurry) {
+      $('.x-wiki-content').after('<h3>感觉本站内容不错，读后有收获？</h3><p><a target="_blank" href="http://www.liaoxuefeng.com/webpage/donate" class="uk-button uk-button-primary"><i class="uk-icon-cny"></i> 我要小额赞助，鼓励作者写出更好的教程</a></p><h3>还可以分享给朋友</h3><p><wb:share-button appkey="1391944217" addition="full" type="button" ralateUid="1658384301" picture_search="false" pic="' + $('meta[property="og:image"]').attr('content') + '"></wb:share-button></p>');
+    } else {
+      $('.x-wiki-content').after('<h3>等待时间太久？</h3><p><a target="_blank" href="http://www.liaoxuefeng.com/webpage/donate" class="uk-button uk-button-primary"><i class="uk-icon-cny"></i> 我要催促作者更新教程</a></p><h3>还可以分享给朋友</h3><p><wb:share-button appkey="1391944217" addition="full" type="button" ralateUid="1658384301" picture_search="false" pic="' + $('meta[property="og:image"]').attr('content') + '"></wb:share-button></p>');
+    }
+  }
+  if (location.pathname.indexOf('/discuss/')===0) {
+    var r = parseQueryString();
+    if (!r.page || r.page==='1') {
+      $('div.x-content>div.uk-comment:first div.uk-comment-body').append('<hr><p class="uk-text-muted">想要问题快速得到解答？分享给朋友试试：</p><p><wb:share-button appkey="1391944217" addition="full" type="button" ralateUid="1658384301" picture_search="false"></wb:share-button></p>');
+    }
+  }
+});
+</script>
+
+<script>
+// article: add share:
+$(function() {
+  if (location.pathname.indexOf('/article/')===0) {
+    $('.x-article-content').find('a[href^=http]').attr('target', '_blank');
+    $('.x-article-content').after('<h3>感觉本站内容不错，读后有收获？</h3><p><a target="_blank" href="http://www.liaoxuefeng.com/webpage/donate" class="uk-button uk-button-primary"><i class="uk-icon-cny"></i> 我要小额赞助，鼓励作者写出更好的文章</a></p><h3>还可以分享给朋友</h3><p><wb:share-button appkey="1391944217" addition="full" type="button" ralateUid="1658384301" picture_search="false" pic="' + $('meta[property="og:image"]').attr('content') + '"></wb:share-button></p>');
+  }
+});
+</script>
+
+<script>
+// all:
+$(function() {
+  $('.x-footer-copyright').find('p').append('<br>由<a target="_blank" href="http://s.click.taobao.com/t?e=m%3D2%26s%3DuVSSwb68TEYcQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClAouhd4loqGpDWNI3LssOJ1ZIW%2FH7aX8LI9nQCCjrrrN3wYAeXhmRFOHMh3DDj7e5Hudn1BbglxZYxUhy8exlzcpAFEHVckI7b93srg%2FL%2FeD3keUEnoKELDlWYetMiZZgV%2BSx6OrKqagyklzFeKMz7Cd4Qek9OyREefaKWlxOHSq5XF%2B87KN7TKeiZ%2BQMlGz6FQ%3D%3D">阿里云</a>托管<br><a href="#0" onclick="location.assign(decodeURIComponent(\'moc.36104%fxlksaA3%otliam\'.split(\'\').reverse().join(\'\')))">广告合作</a>');
+  $('.x-footer').append('<hr><div style="text-align:center"><p>友情链接: <a href="http://www.shi-ci.com/" target="_blank">中华诗词</a> - <a href="http://s.click.taobao.com/t?e=m%3D2%26s%3DjPaT%2Fmi2tL4cQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClAlFz4nQbUpKuV%2FZ67c680w5IW%2FH7aX8LI9nQCCjrrrN3wYAeXhmRFOHMh3DDj7e5Hudn1BbglxZYxUhy8exlzcq9AmARIwX9K%2BnbtOD3UdznPV1H2z0iQv9NkKVMHClW0QbMqOpFMIvnvjQXzzpXdTHGJe8N%2FwNpGw%3D%3D" target="_blank">阿里云</a> - <a href="http://mitpress.mit.edu/sicp/full-text/book/book.html" target="_blank">SICP</a> - <a href="http://www.4clojure.com/" target="_blank">4clojure</a></p></div>');
+});
+</script>
+
+<script>
+// tongji:
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "hm.js-2efddd14a5f2b304677462d06fb4f964.js"/*tpa=http://hm.baidu.com/hm.js?2efddd14a5f2b304677462d06fb4f964*/;
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script>
+$(function() {
+  var x = document.createElement('script');
+  x.src = 'underscore.js'/*tpa=http://www.liaoxuefeng.com/static/js/underscore.js*/;
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(x, s);
+});
+</script>
+
+<!-- END custom_header -->
+</head>
+
+<body>
+    <div class="x-goto-top">
+        <div class="x-arrow"></div>
+        <div class="x-stick"></div>
+    </div>
+
+    <div id="header" class="uk-navbar uk-navbar-attached">
+        <div class="uk-container x-container">
+            <div class="uk-navbar uk-navbar-attached">
+                
+                <ul class="uk-navbar-nav uk-visible-small">
+                    <li><a href="#0" onclick="UIkit.offcanvas.show('#x-offcanvas-left')"><i class="uk-icon-chevron-right"></i></a></li>
+                </ul>
+                
+                <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/%27" tppabs="http://www.liaoxuefeng.com/" class="uk-navbar-brand uk-visible-large">廖雪峰的官方网站</a>
+                <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/%27" tppabs="http://www.liaoxuefeng.com/" class="uk-navbar-brand uk-hidden-large"><i class="uk-icon-home"></i></a>
+                <ul id="ul-navbar" class="uk-navbar-nav uk-hidden-small">
+                    
+                    <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000%27" tppabs="http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000">编程</a></li>
+                    
+                    <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/category/0013738748248885ddf38d8cd1b4803aa74bcda32f853fd000  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/category/0013738748248885ddf38d8cd1b4803aa74bcda32f853fd000%27" tppabs="http://www.liaoxuefeng.com/category/0013738748248885ddf38d8cd1b4803aa74bcda32f853fd000">读书</a></li>
+                    
+                    <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/webpage/java  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/webpage/java%27" tppabs="http://www.liaoxuefeng.com/webpage/java">Java教程</a></li>
+                    
+                    <li><a href="001434446689867b27157e896e74d51a89c25cc8b43bdb3000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000">JavaScript教程</a></li>
+                    
+                    <li><a href="0014316089557264a6b348958f449949df42a6d3a2e542c000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000">Python教程</a></li>
+                    
+                    <li><a href="0013739516305929606dd18361248578c67b8067c8c017b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">Git教程</a></li>
+                    
+                    <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/discuss  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/discuss%27" tppabs="http://www.liaoxuefeng.com/discuss">问答</a></li>
+                    
+                    <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/webpage/donate  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/webpage/donate%27" tppabs="http://www.liaoxuefeng.com/webpage/donate">赞助</a></li>
+                    
+                </ul>
+                
+                <ul class="uk-navbar-nav uk-visible-small">
+                    <li class="uk-parent" data-uk-dropdown>
+                        <a href="#0"><i class="uk-icon-navicon"></i></a>
+                        <div class="uk-dropdown uk-dropdown-navbar">
+                            <ul class="uk-nav uk-nav-navbar">
+                                
+                                <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000%27" tppabs="http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000">编程</a></li>
+                                
+                                <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/category/0013738748248885ddf38d8cd1b4803aa74bcda32f853fd000  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/category/0013738748248885ddf38d8cd1b4803aa74bcda32f853fd000%27" tppabs="http://www.liaoxuefeng.com/category/0013738748248885ddf38d8cd1b4803aa74bcda32f853fd000">读书</a></li>
+                                
+                                <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/webpage/java  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/webpage/java%27" tppabs="http://www.liaoxuefeng.com/webpage/java">Java教程</a></li>
+                                
+                                <li><a href="001434446689867b27157e896e74d51a89c25cc8b43bdb3000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000">JavaScript教程</a></li>
+                                
+                                <li><a href="0014316089557264a6b348958f449949df42a6d3a2e542c000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000">Python教程</a></li>
+                                
+                                <li><a href="0013739516305929606dd18361248578c67b8067c8c017b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">Git教程</a></li>
+                                
+                                <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/discuss  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/discuss%27" tppabs="http://www.liaoxuefeng.com/discuss">问答</a></li>
+                                
+                                <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/webpage/donate  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/webpage/donate%27" tppabs="http://www.liaoxuefeng.com/webpage/donate">赞助</a></li>
+                                
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+                
+
+<!--
+                <div class="uk-navbar-content x-hidden-tiny">
+                    <form id="form-search" class="uk-form uk-margin-remove uk-display-inline-block">
+                        <div class="uk-form-icon">
+                            <i class="uk-icon-search"></i>
+                            <input type="text" placeholder="Search">
+                        </div>
+                    </form>
+                </div>
+-->
+
+                <div class="uk-navbar-flip">
+                    <ul class="uk-navbar-nav">
+                        <li class="uk-parent x-display-if-signin" data-uk-dropdown>
+                            <a href="#0"><i class="uk-icon-user"></i><span class="x-hidden-tiny">&nbsp;</span><span class="x-user-name x-hidden-tiny"></span></a>
+                            <div class="uk-dropdown uk-dropdown-navbar">
+                                <ul class="uk-nav uk-nav-navbar">
+                                    <li><a target="_blank" href="javascript:if(confirm(%27http://www.liaoxuefeng.com/me/profile  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/me/profile%27" tppabs="http://www.liaoxuefeng.com/me/profile"><i class="uk-icon-cogs"></i> Profile</a></li>
+                                    <li class="uk-nav-divider"></li>
+                                    <li><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/auth/signout  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/auth/signout%27" tppabs="http://www.liaoxuefeng.com/auth/signout"><i class="uk-icon-power-off"></i> Sign Out</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="x-display-if-not-signin uk-hidden-small"><a href="javascript:showSignin()"><i class="uk-icon-sign-in"></i> Sign In</a></li>
+                        <li class="x-display-if-not-signin uk-visible-small"><a href="javascript:showSignin()"><i class="uk-icon-sign-in"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div><!-- // header -->
+
+    <div id="main">
+        <div class="x-placeholder-50"><!-- placeholder --></div>
+        <div class="x-placeholder"><!-- placeholder --></div>
+        <div class="uk-container x-container">
+            <div class="uk-grid">
+                <div class="x-body-before uk-width-1-1">
+                    
+                </div>
+            </div>
+            <div class="uk-grid">
+                <div class="uk-width-1-1">
+                
+                    <div class="x-sidebar-left">
+                        <div class="x-sidebar-left-top">
+                            
+                        </div>
+                        <div class="x-sidebar-left-content">
+                            
+    <ul class="uk-nav uk-nav-side">
+        <li class="uk-nav-header">Index</li>
+    </ul>
+    <ul class="uk-nav uk-nav-side" style="margin-right:-15px;">
+        <li id="001434446689867b27157e896e74d51a89c25cc8b43bdb3000"><a href="001434446689867b27157e896e74d51a89c25cc8b43bdb3000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000">JavaScript教程</a></li>
+    
+        <li id="0014344991049250a2c80ec84cb4861bbd1d9b2c0c2850e000" style="margin-left:1em;">
+            <a href="0014344991049250a2c80ec84cb4861bbd1d9b2c0c2850e000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014344991049250a2c80ec84cb4861bbd1d9b2c0c2850e000">JavaScript简介</a>
+        </li>
+    
+        <li id="00143449917624134f5c4695b524e81a581ab5a222b05ec000" style="margin-left:1em;">
+            <a href="00143449917624134f5c4695b524e81a581ab5a222b05ec000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449917624134f5c4695b524e81a581ab5a222b05ec000">快速入门</a>
+        </li>
+    
+        <li id="00143470025281435e4e03117a74438aaf98c4f7b30b307000" style="margin-left:2em;">
+            <a href="00143470025281435e4e03117a74438aaf98c4f7b30b307000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143470025281435e4e03117a74438aaf98c4f7b30b307000">基本语法</a>
+        </li>
+    
+        <li id="001434499190108eec0bdf14e704a09935cd112e501e31a000" style="margin-left:2em;">
+            <a href="001434499190108eec0bdf14e704a09935cd112e501e31a000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499190108eec0bdf14e704a09935cd112e501e31a000">数据类型和变量</a>
+        </li>
+    
+        <li id="001434499203693072018f8878842a9b0011e3ff4e38b6b000" style="margin-left:2em;">
+            <a href="001434499203693072018f8878842a9b0011e3ff4e38b6b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499203693072018f8878842a9b0011e3ff4e38b6b000">字符串</a>
+        </li>
+    
+        <li id="00143449921138898cdeb7fc2214dc08c6c67827758cd2f000" style="margin-left:2em;">
+            <a href="00143449921138898cdeb7fc2214dc08c6c67827758cd2f000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449921138898cdeb7fc2214dc08c6c67827758cd2f000">数组</a>
+        </li>
+    
+        <li id="00143449922400335c44d4b8c904ff29a78fd4334347131000" style="margin-left:2em;">
+            <a href="00143449922400335c44d4b8c904ff29a78fd4334347131000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449922400335c44d4b8c904ff29a78fd4334347131000">对象</a>
+        </li>
+    
+        <li id="0014345005693811782d9e338994ec19aa1c5325824bc15000" style="margin-left:2em;">
+            <a href="0014345005693811782d9e338994ec19aa1c5325824bc15000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345005693811782d9e338994ec19aa1c5325824bc15000">条件判断</a>
+        </li>
+    
+        <li id="001434500620831b2aeb535f5e245c788493e9f4ff416c0000" style="margin-left:2em;">
+            <a href="001434500620831b2aeb535f5e245c788493e9f4ff416c0000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434500620831b2aeb535f5e245c788493e9f4ff416c0000">循环</a>
+        </li>
+    
+        <li id="0014345007434430758e3ac6e1b44b1865178e7aff9082e000" style="margin-left:2em;">
+            <a href="0014345007434430758e3ac6e1b44b1865178e7aff9082e000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345007434430758e3ac6e1b44b1865178e7aff9082e000">Map和Set</a>
+        </li>
+    
+        <li id="00143450082788640f82a480be8481a8ce8272951a40970000" style="margin-left:2em;">
+            <a href="00143450082788640f82a480be8481a8ce8272951a40970000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450082788640f82a480be8481a8ce8272951a40970000">iterable</a>
+        </li>
+    
+        <li id="0014344992519683bcfa2e33760462fb5db8eb9430924be000" style="margin-left:1em;">
+            <a href="0014344992519683bcfa2e33760462fb5db8eb9430924be000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014344992519683bcfa2e33760462fb5db8eb9430924be000">函数</a>
+        </li>
+    
+        <li id="00143449926746982f181557d9b423f819e89709feabdb4000" style="margin-left:2em;">
+            <a href="00143449926746982f181557d9b423f819e89709feabdb4000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449926746982f181557d9b423f819e89709feabdb4000">函数定义和调用</a>
+        </li>
+    
+        <li id="0014344993159773a464f34e1724700a6d5dd9e235ceb7c000" style="margin-left:2em;">
+            <a href="0014344993159773a464f34e1724700a6d5dd9e235ceb7c000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014344993159773a464f34e1724700a6d5dd9e235ceb7c000">变量作用域</a>
+        </li>
+    
+        <li id="0014345005399057070809cfaa347dfb7207900cfd116fb000" style="margin-left:2em;">
+            <a href="0014345005399057070809cfaa347dfb7207900cfd116fb000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345005399057070809cfaa347dfb7207900cfd116fb000">方法</a>
+        </li>
+    
+        <li id="001434499355829ead974e550644e2ebd9fd8bb1b0dd721000" style="margin-left:2em;">
+            <a href="001434499355829ead974e550644e2ebd9fd8bb1b0dd721000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499355829ead974e550644e2ebd9fd8bb1b0dd721000">高阶函数</a>
+        </li>
+    
+        <li id="001435119854495d29b9b3d7028477a96ed74db95032675000" style="margin-left:3em;">
+            <a href="001435119854495d29b9b3d7028477a96ed74db95032675000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001435119854495d29b9b3d7028477a96ed74db95032675000">map/reduce</a>
+        </li>
+    
+        <li id="0014351219769203e3fbe1ed611475db3d439393add8997000" style="margin-left:3em;">
+            <a href="0014351219769203e3fbe1ed611475db3d439393add8997000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014351219769203e3fbe1ed611475db3d439393add8997000">filter</a>
+        </li>
+    
+        <li id="0014351226817991a9c08f1ec0a45c99b9209bcfc71b8f6000" style="margin-left:3em;">
+            <a href="0014351226817991a9c08f1ec0a45c99b9209bcfc71b8f6000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014351226817991a9c08f1ec0a45c99b9209bcfc71b8f6000">sort</a>
+        </li>
+    
+        <li id="00143449934543461c9d5dfeeb848f5b72bd012e1113d15000" style="margin-left:2em;">
+            <a href="00143449934543461c9d5dfeeb848f5b72bd012e1113d15000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449934543461c9d5dfeeb848f5b72bd012e1113d15000">闭包</a>
+        </li>
+    
+        <li id="001438565969057627e5435793645b7acaee3b6869d1374000" style="margin-left:2em;">
+            <a href="001438565969057627e5435793645b7acaee3b6869d1374000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001438565969057627e5435793645b7acaee3b6869d1374000">箭头函数</a>
+        </li>
+    
+        <li id="00143450083887673122b45a4414333ac366c3c935125e7000" style="margin-left:2em;">
+            <a href="00143450083887673122b45a4414333ac366c3c935125e7000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450083887673122b45a4414333ac366c3c935125e7000">generator</a>
+        </li>
+    
+        <li id="00143449957099176f55ba07b764c3daa522217d0e42643000" style="margin-left:1em;">
+            <a href="00143449957099176f55ba07b764c3daa522217d0e42643000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449957099176f55ba07b764c3daa522217d0e42643000">标准对象</a>
+        </li>
+    
+        <li id="001434499525761186acdd5ac3a44f8a50cc0ed8606139b000" style="margin-left:2em;">
+            <a href="001434499525761186acdd5ac3a44f8a50cc0ed8606139b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499525761186acdd5ac3a44f8a50cc0ed8606139b000">Date</a>
+        </li>
+    
+        <li id="001434499503920bb7b42ff6627420da2ceae4babf6c4f2000" style="margin-left:2em;">
+            <a href="001434499503920bb7b42ff6627420da2ceae4babf6c4f2000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499503920bb7b42ff6627420da2ceae4babf6c4f2000">RegExp</a>
+        </li>
+    
+        <li id="001434499490767fe5a0e31e17e44b69dcd1196f7ec6fc6000" style="margin-left:2em;">
+            <a href="001434499490767fe5a0e31e17e44b69dcd1196f7ec6fc6000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499490767fe5a0e31e17e44b69dcd1196f7ec6fc6000">JSON</a>
+        </li>
+    
+        <li id="001434499763408e24c210985d34edcabbca944b4239e20000" style="margin-left:1em;">
+            <a href="001434499763408e24c210985d34edcabbca944b4239e20000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499763408e24c210985d34edcabbca944b4239e20000">面向对象编程</a>
+        </li>
+    
+        <li id="0014344997235247b53be560ab041a7b10360a567422a78000" style="margin-left:2em;">
+            <a href="0014344997235247b53be560ab041a7b10360a567422a78000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014344997235247b53be560ab041a7b10360a567422a78000">创建对象</a>
+        </li>
+    
+        <li id="0014344997013405abfb7f0e1904a04ba6898a384b1e925000" style="margin-left:2em;">
+            <a href="0014344997013405abfb7f0e1904a04ba6898a384b1e925000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014344997013405abfb7f0e1904a04ba6898a384b1e925000">原型继承</a>
+        </li>
+    
+        <li id="001458267339633fd3a83c597d04b5fb59f7d1f6792efb3000" style="margin-left:2em;">
+            <a href="001458267339633fd3a83c597d04b5fb59f7d1f6792efb3000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001458267339633fd3a83c597d04b5fb59f7d1f6792efb3000">class继承</a>
+        </li>
+    
+        <li id="0014344997647015f03abc1bb5f46129a7526292a12ab26000" style="margin-left:1em;">
+            <a href="0014344997647015f03abc1bb5f46129a7526292a12ab26000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014344997647015f03abc1bb5f46129a7526292a12ab26000">浏览器</a>
+        </li>
+    
+        <li id="001434499832124d97d77b00706461f9daf1a390b75ade1000" style="margin-left:2em;">
+            <a href="001434499832124d97d77b00706461f9daf1a390b75ade1000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499832124d97d77b00706461f9daf1a390b75ade1000">浏览器对象</a>
+        </li>
+    
+        <li id="001434499851683f7f8d6b7717343248a75d5e7f930def4000" style="margin-left:2em;">
+            <a href="001434499851683f7f8d6b7717343248a75d5e7f930def4000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499851683f7f8d6b7717343248a75d5e7f930def4000">操作DOM</a>
+        </li>
+    
+        <li id="0014345011220342fa37b4a62ea4972bf9e6da10edc2a85000" style="margin-left:3em;">
+            <a href="0014345011220342fa37b4a62ea4972bf9e6da10edc2a85000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345011220342fa37b4a62ea4972bf9e6da10edc2a85000">更新DOM</a>
+        </li>
+    
+        <li id="0014359940861047248456754f44e55919fe9370c723ae6000" style="margin-left:3em;">
+            <a href="0014359940861047248456754f44e55919fe9370c723ae6000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014359940861047248456754f44e55919fe9370c723ae6000">插入DOM</a>
+        </li>
+    
+        <li id="001435997163473d309006809fa43abbba322be3eb090a8000" style="margin-left:3em;">
+            <a href="001435997163473d309006809fa43abbba322be3eb090a8000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001435997163473d309006809fa43abbba322be3eb090a8000">删除DOM</a>
+        </li>
+    
+        <li id="001434499922277b890fd537901490a84fc24b2b8b8867e000" style="margin-left:2em;">
+            <a href="001434499922277b890fd537901490a84fc24b2b8b8867e000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499922277b890fd537901490a84fc24b2b8b8867e000">操作表单</a>
+        </li>
+    
+        <li id="00143449993875172bbfac4b9764e2d9e2b5a17c706b3db000" style="margin-left:2em;">
+            <a href="00143449993875172bbfac4b9764e2d9e2b5a17c706b3db000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449993875172bbfac4b9764e2d9e2b5a17c706b3db000">操作文件</a>
+        </li>
+    
+        <li id="001434499861493e7c35be5e0864769a2c06afb4754acc6000" style="margin-left:2em;">
+            <a href="001434499861493e7c35be5e0864769a2c06afb4754acc6000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499861493e7c35be5e0864769a2c06afb4754acc6000">AJAX</a>
+        </li>
+    
+        <li id="0014345008539155e93fc16046d4bb7854943814c4f9dc2000" style="margin-left:2em;">
+            <a href="0014345008539155e93fc16046d4bb7854943814c4f9dc2000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345008539155e93fc16046d4bb7854943814c4f9dc2000">Promise</a>
+        </li>
+    
+        <li id="00143449990549914b596ac1da54a228a6fa9643e88bc0c000" style="margin-left:2em;">
+            <a href="00143449990549914b596ac1da54a228a6fa9643e88bc0c000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449990549914b596ac1da54a228a6fa9643e88bc0c000">Canvas</a>
+        </li>
+    
+        <li id="001434499993118b8173572625b4afe93a8b19dd707ea1d000" style="margin-left:1em;">
+            <a href="001434499993118b8173572625b4afe93a8b19dd707ea1d000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499993118b8173572625b4afe93a8b19dd707ea1d000">jQuery</a>
+        </li>
+    
+        <li id="0014345004443979a29e0e0be054e75a652613f132f7f0b000" style="margin-left:2em;">
+            <a href="0014345004443979a29e0e0be054e75a652613f132f7f0b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345004443979a29e0e0be054e75a652613f132f7f0b000">选择器</a>
+        </li>
+    
+        <li id="001437023139167510b90eb2c924f72aeba0db592a9eb54000" style="margin-left:3em;">
+            <a href="001437023139167510b90eb2c924f72aeba0db592a9eb54000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001437023139167510b90eb2c924f72aeba0db592a9eb54000">层级选择器</a>
+        </li>
+    
+        <li id="0014370268753868fc999e1563341fcb9df078b160a20e5000" style="margin-left:3em;">
+            <a href="0014370268753868fc999e1563341fcb9df078b160a20e5000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014370268753868fc999e1563341fcb9df078b160a20e5000">查找和过滤</a>
+        </li>
+    
+        <li id="001434500494451273e6b3dec9d411d9ba841dee8caec45000" style="margin-left:2em;">
+            <a href="001434500494451273e6b3dec9d411d9ba841dee8caec45000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434500494451273e6b3dec9d411d9ba841dee8caec45000">操作DOM</a>
+        </li>
+    
+        <li id="001437110841551950380fdc17c4abdaebd38363dbe2348000" style="margin-left:3em;">
+            <a href="001437110841551950380fdc17c4abdaebd38363dbe2348000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001437110841551950380fdc17c4abdaebd38363dbe2348000">修改DOM结构</a>
+        </li>
+    
+        <li id="00143564690172894383ccd7ab64669b4971f4b03fa342d000" style="margin-left:2em;">
+            <a href="00143564690172894383ccd7ab64669b4971f4b03fa342d000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143564690172894383ccd7ab64669b4971f4b03fa342d000">事件</a>
+        </li>
+    
+        <li id="001434500456006abd6381dc3bb439d932cb895b62d9eee000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434500456006abd6381dc3bb439d932cb895b62d9eee000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434500456006abd6381dc3bb439d932cb895b62d9eee000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434500456006abd6381dc3bb439d932cb895b62d9eee000">动画</a>
+        </li>
+    
+        <li id="00143450046645491e306a4f74746daaef4d172f66335b5000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450046645491e306a4f74746daaef4d172f66335b5000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450046645491e306a4f74746daaef4d172f66335b5000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450046645491e306a4f74746daaef4d172f66335b5000">AJAX</a>
+        </li>
+    
+        <li id="0014356468967974219593d94f64d06b370c87fc38eade4000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014356468967974219593d94f64d06b370c87fc38eade4000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014356468967974219593d94f64d06b370c87fc38eade4000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014356468967974219593d94f64d06b370c87fc38eade4000">扩展</a>
+        </li>
+    
+        <li id="001450370530539bc6e0e3dc02c4d3bb79993a8cde056b5000" style="margin-left:1em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450370530539bc6e0e3dc02c4d3bb79993a8cde056b5000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450370530539bc6e0e3dc02c4d3bb79993a8cde056b5000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450370530539bc6e0e3dc02c4d3bb79993a8cde056b5000">underscore</a>
+        </li>
+    
+        <li id="001450372452505599881a3debd4becbe1591a94950fbb8000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450372452505599881a3debd4becbe1591a94950fbb8000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450372452505599881a3debd4becbe1591a94950fbb8000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450372452505599881a3debd4becbe1591a94950fbb8000">Collections</a>
+        </li>
+    
+        <li id="001450375778335b78230044e114619bb4211c3769897a7000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450375778335b78230044e114619bb4211c3769897a7000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450375778335b78230044e114619bb4211c3769897a7000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450375778335b78230044e114619bb4211c3769897a7000">Arrays</a>
+        </li>
+    
+        <li id="001450391119558965d1614860145b881340e490534c5c3000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450391119558965d1614860145b881340e490534c5c3000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450391119558965d1614860145b881340e490534c5c3000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450391119558965d1614860145b881340e490534c5c3000">Functions</a>
+        </li>
+    
+        <li id="0014504059891467b6dacbe5960461983d2c0a8d423d037000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014504059891467b6dacbe5960461983d2c0a8d423d037000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014504059891467b6dacbe5960461983d2c0a8d423d037000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014504059891467b6dacbe5960461983d2c0a8d423d037000">Objects</a>
+        </li>
+    
+        <li id="001450409116077b5e000f9cb57448785b181b0939caecd000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450409116077b5e000f9cb57448785b181b0939caecd000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450409116077b5e000f9cb57448785b181b0939caecd000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450409116077b5e000f9cb57448785b181b0939caecd000">Chaining</a>
+        </li>
+    
+        <li id="001434501245426ad4b91f2b880464ba876a8e3043fc8ef000" style="margin-left:1em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501245426ad4b91f2b880464ba876a8e3043fc8ef000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501245426ad4b91f2b880464ba876a8e3043fc8ef000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501245426ad4b91f2b880464ba876a8e3043fc8ef000">Node.js</a>
+        </li>
+    
+        <li id="00143450141843488beddae2a1044cab5acb5125baf0882000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450141843488beddae2a1044cab5acb5125baf0882000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450141843488beddae2a1044cab5acb5125baf0882000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450141843488beddae2a1044cab5acb5125baf0882000">安装Node.js和npm</a>
+        </li>
+    
+        <li id="001434501436552e03ec6cc152b4c84959f14d0ea278488000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501436552e03ec6cc152b4c84959f14d0ea278488000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501436552e03ec6cc152b4c84959f14d0ea278488000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501436552e03ec6cc152b4c84959f14d0ea278488000">第一个Node程序</a>
+        </li>
+    
+        <li id="001470969077294a6455fc9cd1f48b69f82cd05e7fa9b40000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001470969077294a6455fc9cd1f48b69f82cd05e7fa9b40000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001470969077294a6455fc9cd1f48b69f82cd05e7fa9b40000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001470969077294a6455fc9cd1f48b69f82cd05e7fa9b40000">搭建Node开发环境</a>
+        </li>
+    
+        <li id="001434502419592fd80bbb0613a42118ccab9435af408fd000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502419592fd80bbb0613a42118ccab9435af408fd000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502419592fd80bbb0613a42118ccab9435af408fd000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502419592fd80bbb0613a42118ccab9435af408fd000">模块</a>
+        </li>
+    
+        <li id="001434501482448f6b36071ab6949d3a7ecb5a71a3c9df9000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501482448f6b36071ab6949d3a7ecb5a71a3c9df9000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501482448f6b36071ab6949d3a7ecb5a71a3c9df9000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501482448f6b36071ab6949d3a7ecb5a71a3c9df9000">基本模块</a>
+        </li>
+    
+        <li id="001434501497361a4e77c055f5c4a8da2d5a1868df36ad1000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501497361a4e77c055f5c4a8da2d5a1868df36ad1000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501497361a4e77c055f5c4a8da2d5a1868df36ad1000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501497361a4e77c055f5c4a8da2d5a1868df36ad1000">fs</a>
+        </li>
+    
+        <li id="001434501515527e6fce6d5ec4b4fd9b572122cd1ec8ded000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501515527e6fce6d5ec4b4fd9b572122cd1ec8ded000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501515527e6fce6d5ec4b4fd9b572122cd1ec8ded000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501515527e6fce6d5ec4b4fd9b572122cd1ec8ded000">stream</a>
+        </li>
+    
+        <li id="0014345015296018cac40c198b543fead5c549865b9bd4a000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345015296018cac40c198b543fead5c549865b9bd4a000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345015296018cac40c198b543fead5c549865b9bd4a000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345015296018cac40c198b543fead5c549865b9bd4a000">http</a>
+        </li>
+    
+        <li id="001434501504929883d11d84a1541c6907eefd792c0da51000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501504929883d11d84a1541c6907eefd792c0da51000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501504929883d11d84a1541c6907eefd792c0da51000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501504929883d11d84a1541c6907eefd792c0da51000">crypto</a>
+        </li>
+    
+        <li id="001434501549492cdf5d4013db14fa9ad8ca172f0664345000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501549492cdf5d4013db14fa9ad8ca172f0664345000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501549492cdf5d4013db14fa9ad8ca172f0664345000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501549492cdf5d4013db14fa9ad8ca172f0664345000">Web开发</a>
+        </li>
+    
+        <li id="001434501579966ab03decb0dd246e1a6799dd653a15e1b000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501579966ab03decb0dd246e1a6799dd653a15e1b000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501579966ab03decb0dd246e1a6799dd653a15e1b000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501579966ab03decb0dd246e1a6799dd653a15e1b000">koa</a>
+        </li>
+    
+        <li id="001471087582981d6c0ea265bf241b59a04fa6f61d767f6000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471087582981d6c0ea265bf241b59a04fa6f61d767f6000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471087582981d6c0ea265bf241b59a04fa6f61d767f6000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471087582981d6c0ea265bf241b59a04fa6f61d767f6000">koa入门</a>
+        </li>
+    
+        <li id="001471133885340dad9058705804899b1cc2d0a10e7dc80000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471133885340dad9058705804899b1cc2d0a10e7dc80000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471133885340dad9058705804899b1cc2d0a10e7dc80000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471133885340dad9058705804899b1cc2d0a10e7dc80000">处理URL</a>
+        </li>
+    
+        <li id="0014713964925087c29166d8c344a949364e40e2f28dc09000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014713964925087c29166d8c344a949364e40e2f28dc09000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014713964925087c29166d8c344a949364e40e2f28dc09000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014713964925087c29166d8c344a949364e40e2f28dc09000">使用Nunjucks</a>
+        </li>
+    
+        <li id="001434501628911140e1cb6ce7d42e5af81480f7ecd5802000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501628911140e1cb6ce7d42e5af81480f7ecd5802000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501628911140e1cb6ce7d42e5af81480f7ecd5802000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501628911140e1cb6ce7d42e5af81480f7ecd5802000">使用MVC</a>
+        </li>
+    
+        <li id="00143450161807565b0c93cb65d4df0a733bf15dc1f8c79000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450161807565b0c93cb65d4df0a733bf15dc1f8c79000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450161807565b0c93cb65d4df0a733bf15dc1f8c79000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450161807565b0c93cb65d4df0a733bf15dc1f8c79000">mysql</a>
+        </li>
+    
+        <li id="001471955049232be7492e76f514d45a2180e2c224eb7a6000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471955049232be7492e76f514d45a2180e2c224eb7a6000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471955049232be7492e76f514d45a2180e2c224eb7a6000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471955049232be7492e76f514d45a2180e2c224eb7a6000">使用Sequelize</a>
+        </li>
+    
+        <li id="001472286125147031e735933574ae099842afd31be80d1000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472286125147031e735933574ae099842afd31be80d1000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472286125147031e735933574ae099842afd31be80d1000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472286125147031e735933574ae099842afd31be80d1000">建立Model</a>
+        </li>
+    
+        <li id="00147203593334596b366f3fe0b409fbc30ad81a0a91c4a000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147203593334596b366f3fe0b409fbc30ad81a0a91c4a000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147203593334596b366f3fe0b409fbc30ad81a0a91c4a000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147203593334596b366f3fe0b409fbc30ad81a0a91c4a000">mocha</a>
+        </li>
+    
+        <li id="00147204317563462840426beb04a849ba813eb46bb347c000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147204317563462840426beb04a849ba813eb46bb347c000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147204317563462840426beb04a849ba813eb46bb347c000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147204317563462840426beb04a849ba813eb46bb347c000">编写测试</a>
+        </li>
+    
+        <li id="0014723007105817ff3d8fae5b9491a88982aa1655e66be000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014723007105817ff3d8fae5b9491a88982aa1655e66be000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014723007105817ff3d8fae5b9491a88982aa1655e66be000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014723007105817ff3d8fae5b9491a88982aa1655e66be000">异步测试</a>
+        </li>
+    
+        <li id="001472780997905c8f293615c5a42eab058b6dc29936a5c000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472780997905c8f293615c5a42eab058b6dc29936a5c000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472780997905c8f293615c5a42eab058b6dc29936a5c000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472780997905c8f293615c5a42eab058b6dc29936a5c000">WebSocket</a>
+        </li>
+    
+        <li id="0014727922914053479c966220f47da91991fa9c27ac3ea000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014727922914053479c966220f47da91991fa9c27ac3ea000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014727922914053479c966220f47da91991fa9c27ac3ea000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014727922914053479c966220f47da91991fa9c27ac3ea000">使用ws</a>
+        </li>
+    
+        <li id="001472794708264206fcf1589bb43caa0395752aa26538c000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472794708264206fcf1589bb43caa0395752aa26538c000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472794708264206fcf1589bb43caa0395752aa26538c000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472794708264206fcf1589bb43caa0395752aa26538c000">编写聊天室</a>
+        </li>
+    
+        <li id="001473590199114b8523ba038dd4359a16ad0bbd3c8a1f2000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001473590199114b8523ba038dd4359a16ad0bbd3c8a1f2000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001473590199114b8523ba038dd4359a16ad0bbd3c8a1f2000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001473590199114b8523ba038dd4359a16ad0bbd3c8a1f2000">REST</a>
+        </li>
+    
+        <li id="0014735914606943e2866257aa644b4bdfe01d26d29960b000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014735914606943e2866257aa644b4bdfe01d26d29960b000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014735914606943e2866257aa644b4bdfe01d26d29960b000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014735914606943e2866257aa644b4bdfe01d26d29960b000">编写REST API</a>
+        </li>
+    
+        <li id="0014735944539193ab2edd2740f44a79efb438a05e83727000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014735944539193ab2edd2740f44a79efb438a05e83727000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014735944539193ab2edd2740f44a79efb438a05e83727000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014735944539193ab2edd2740f44a79efb438a05e83727000">开发REST API</a>
+        </li>
+    
+        <li id="001475449022563a6591e6373324d1abd93e0e3fa04397f000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001475449022563a6591e6373324d1abd93e0e3fa04397f000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001475449022563a6591e6373324d1abd93e0e3fa04397f000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001475449022563a6591e6373324d1abd93e0e3fa04397f000">MVVM</a>
+        </li>
+    
+        <li id="0014757105098309140e608db714251bf071db711a9d183000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757105098309140e608db714251bf071db711a9d183000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757105098309140e608db714251bf071db711a9d183000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757105098309140e608db714251bf071db711a9d183000">单向绑定</a>
+        </li>
+    
+        <li id="00147574857851718682c42639f466a934ad9d4f485d1f2000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147574857851718682c42639f466a934ad9d4f485d1f2000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147574857851718682c42639f466a934ad9d4f485d1f2000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147574857851718682c42639f466a934ad9d4f485d1f2000">双向绑定</a>
+        </li>
+    
+        <li id="0014757513445737513d7d65cd64333b5b6ba772839e401000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757513445737513d7d65cd64333b5b6ba772839e401000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757513445737513d7d65cd64333b5b6ba772839e401000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757513445737513d7d65cd64333b5b6ba772839e401000">同步DOM结构</a>
+        </li>
+    
+        <li id="00147576011615487c65971b3bd4acfa8ee94baaab3dbf7000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147576011615487c65971b3bd4acfa8ee94baaab3dbf7000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147576011615487c65971b3bd4acfa8ee94baaab3dbf7000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147576011615487c65971b3bd4acfa8ee94baaab3dbf7000">集成API</a>
+        </li>
+    
+        <li id="0014757971662334e405bae72894f5c88a4bc75d01406da000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757971662334e405bae72894f5c88a4bc75d01406da000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757971662334e405bae72894f5c88a4bc75d01406da000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757971662334e405bae72894f5c88a4bc75d01406da000">在线电子表格</a>
+        </li>
+    
+        <li id="001434502089103cfd7d8160b6341d280499f541f430b64000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502089103cfd7d8160b6341d280499f541f430b64000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502089103cfd7d8160b6341d280499f541f430b64000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502089103cfd7d8160b6341d280499f541f430b64000">自动化工具</a>
+        </li>
+    
+        <li id="0014702883533702219013a10964054bd9a7c322b1c7e9c000" style="margin-left:1em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014702883533702219013a10964054bd9a7c322b1c7e9c000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014702883533702219013a10964054bd9a7c322b1c7e9c000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014702883533702219013a10964054bd9a7c322b1c7e9c000">React</a>
+        </li>
+    
+        <li id="001434502446010ad7a7602d71b49c9a3a0b8484f88f2cd000" style="margin-left:1em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502446010ad7a7602d71b49c9a3a0b8484f88f2cd000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502446010ad7a7602d71b49c9a3a0b8484f88f2cd000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502446010ad7a7602d71b49c9a3a0b8484f88f2cd000">期末总结</a>
+        </li>
+    
+    </ul>
+    <div class="x-placeholder"></div>
+
+                        </div>
+                        <div class="x-sidebar-left-bottom">
+                            <h3>关于作者</h3>
+<iframe width="100%" height="90" class="share_self"  frameborder="0" scrolling="no" src="index.php-language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=5&isTitle=0&noborder=0&isWeibo=0&isFans=0&uid=1658384301&verifier=078cedea&colors=0593d3,ffffff,666666,0593d3,0477ab&dpc=1" tppabs="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=5&isTitle=0&noborder=0&isWeibo=0&isFans=0&uid=1658384301&verifier=078cedea&colors=0593d3,ffffff,666666,0593d3,0477ab&dpc=1"></iframe>
+
+<div class="x-promo-b" style="width:100%;overflow-x:hidden;margin-bottom:5px"></div>
+
+<div style="width:100%;overflow-x:hidden;">
+<script async src="adsbygoogle.js" tppabs="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 300x600-lxf -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:300px;height:600px"
+     data-ad-client="ca-pub-6727358730461554"
+     data-ad-slot="4769867116"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div style="width:100%;overflow-x:hidden;">
+<script type="text/javascript">
+    /*300x250 @baidu*/
+    var cpro_id = "u2060917";
+</script>
+<script src="c.js" tppabs="http://cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript"></script>
+</div>
+
+                        </div>
+                    </div>
+                
+                
+
+                    <div class="x-center">
+                        <div>
+                            
+                        </div>
+                        <div class="x-content" style="width:100%">
+                            
+    <h4>AJAX</h4>
+    <div class="x-wiki-info"><span>Reads: 53129</span></div>
+    <hr>
+    <div class="x-wiki-content">
+        <p>AJAX不是JavaScript的规范，它只是一个哥们“发明”的缩写：Asynchronous JavaScript and XML，意思就是用JavaScript执行异步网络请求。</p>
+<p>如果仔细观察一个Form的提交，你就会发现，一旦用户点击“Submit”按钮，表单开始提交，浏览器就会刷新页面，然后在新页面里告诉你操作是成功了还是失败了。如果不幸由于网络太慢或者其他原因，就会得到一个404页面。</p>
+<p>这就是Web的运作原理：一次HTTP请求对应一个页面。</p>
+<p>如果要让用户留在当前页面中，同时发出新的HTTP请求，就必须用JavaScript发送这个新请求，接收到数据后，再用JavaScript更新页面，这样一来，用户就感觉自己仍然停留在当前页面，但是数据却可以不断地更新。</p>
+<p>最早大规模使用AJAX的就是Gmail，Gmail的页面在首次加载后，剩下的所有数据都依赖于AJAX来更新。</p>
+<p>用JavaScript写一个完整的AJAX代码并不复杂，但是需要注意：AJAX请求是异步执行的，也就是说，要通过回调函数获得响应。</p>
+<p>在现代浏览器上写AJAX主要依靠<code>XMLHttpRequest</code>对象：</p>
+<pre class="x-javascript">
+'use strict';
+----
+function success(text) {
+    var textarea = document.getElementById('test-response-text');
+    textarea.value = text;
+}
+
+function fail(code) {
+    var textarea = document.getElementById('test-response-text');
+    textarea.value = 'Error code: ' + code;
+}
+
+var request = new XMLHttpRequest(); // 新建XMLHttpRequest对象
+
+request.onreadystatechange = function () { // 状态发生变化时，函数被回调
+    if (request.readyState === 4) { // 成功完成
+        // 判断响应结果:
+        if (request.status === 200) {
+            // 成功，通过responseText拿到响应的文本:
+            return success(request.responseText);
+        } else {
+            // 失败，根据响应码判断失败原因:
+            return fail(request.status);
+        }
+    } else {
+        // HTTP请求还在继续...
+    }
+}
+
+// 发送请求:
+request.open('GET', '/api/categories');
+request.send();
+
+alert('请求已发送，请等待响应...');
+</pre>
+
+<textarea id="test-response-text" rows="5" style="width: 90%; margin: 15px 0; resize: none;">
+响应结果：
+</textarea>
+
+<p>对于低版本的IE，需要换一个<code>ActiveXObject</code>对象：</p>
+<pre class="x-javascript">
+'use strict';
+----
+function success(text) {
+    var textarea = document.getElementById('test-ie-response-text');
+    textarea.value = text;
+}
+
+function fail(code) {
+    var textarea = document.getElementById('test-ie-response-text');
+    textarea.value = 'Error code: ' + code;
+}
+
+var request = new ActiveXObject('Microsoft.XMLHTTP'); // 新建Microsoft.XMLHTTP对象
+
+request.onreadystatechange = function () { // 状态发生变化时，函数被回调
+    if (request.readyState === 4) { // 成功完成
+        // 判断响应结果:
+        if (request.status === 200) {
+            // 成功，通过responseText拿到响应的文本:
+            return success(request.responseText);
+        } else {
+            // 失败，根据响应码判断失败原因:
+            return fail(request.status);
+        }
+    } else {
+        // HTTP请求还在继续...
+    }
+}
+
+// 发送请求:
+request.open('GET', '/api/categories');
+request.send();
+
+alert('请求已发送，请等待响应...');
+</pre>
+
+<textarea id="test-ie-response-text" rows="5" style="width: 90%; margin: 15px 0; resize: none;">
+IE响应结果：
+</textarea>
+
+<p>如果你想把标准写法和IE写法混在一起，可以这么写：</p>
+<pre><code>var request;
+if (window.XMLHttpRequest) {
+    request = new XMLHttpRequest();
+} else {
+    request = new ActiveXObject(&#39;Microsoft.XMLHTTP&#39;);
+}
+</code></pre><p>通过检测<code>window</code>对象是否有<code>XMLHttpRequest</code>属性来确定浏览器是否支持标准的<code>XMLHttpRequest</code>。注意，<em>不要</em>根据浏览器的<code>navigator.userAgent</code>来检测浏览器是否支持某个JavaScript特性，一是因为这个字符串本身可以伪造，二是通过IE版本判断JavaScript特性将非常复杂。</p>
+<p>当创建了<code>XMLHttpRequest</code>对象后，要先设置<code>onreadystatechange</code>的回调函数。在回调函数中，通常我们只需通过<code>readyState === 4</code>判断请求是否完成，如果已完成，再根据<code>status === 200</code>判断是否是一个成功的响应。</p>
+<p><code>XMLHttpRequest</code>对象的<code>open()</code>方法有3个参数，第一个参数指定是<code>GET</code>还是<code>POST</code>，第二个参数指定URL地址，第三个参数指定是否使用异步，默认是<code>true</code>，所以不用写。</p>
+<p><em>注意</em>，千万不要把第三个参数指定为<code>false</code>，否则浏览器将停止响应，直到AJAX请求完成。如果这个请求耗时10秒，那么10秒内你会发现浏览器处于“假死”状态。</p>
+<p>最后调用<code>send()</code>方法才真正发送请求。<code>GET</code>请求不需要参数，<code>POST</code>请求需要把body部分以字符串或者<code>FormData</code>对象传进去。</p>
+<h3 id="-">安全限制</h3>
+<p>上面代码的URL使用的是相对路径。如果你把它改为<code>&#39;http://www.sina.com.cn/&#39;</code>，再运行，肯定报错。在Chrome的控制台里，还可以看到错误信息。</p>
+<p>这是因为浏览器的同源策略导致的。默认情况下，JavaScript在发送AJAX请求时，URL的域名必须和当前页面完全一致。</p>
+<p>完全一致的意思是，域名要相同（<code>www.example.com</code>和<code>example.com</code>不同），协议要相同（<code>http</code>和<code>https</code>不同），端口号要相同（默认是<code>:80</code>端口，它和<code>:8080</code>就不同）。有的浏览器口子松一点，允许端口不同，大多数浏览器都会严格遵守这个限制。</p>
+<p>那是不是用JavaScript无法请求外域（就是其他网站）的URL了呢？方法还是有的，大概有这么几种：</p>
+<p>一是通过Flash插件发送HTTP请求，这种方式可以绕过浏览器的安全限制，但必须安装Flash，并且跟Flash交互。不过Flash用起来麻烦，而且现在用得也越来越少了。</p>
+<p>二是通过在同源域名下架设一个代理服务器来转发，JavaScript负责把请求发送到代理服务器：</p>
+<pre><code>&#39;/proxy?url=http://www.sina.com.cn&#39;
+</code></pre><p>代理服务器再把结果返回，这样就遵守了浏览器的同源策略。这种方式麻烦之处在于需要服务器端额外做开发。</p>
+<p>第三种方式称为JSONP，它有个限制，只能用GET请求，并且要求返回JavaScript。这种方式跨域实际上是利用了浏览器允许跨域引用JavaScript资源：</p>
+<pre><code>&lt;html&gt;
+&lt;head&gt;
+    &lt;script src=&quot;http://example.com/abc.js&quot;&gt;&lt;/script&gt;
+    ...
+&lt;/head&gt;
+&lt;body&gt;
+...
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>JSONP通常以函数调用的形式返回，例如，返回JavaScript内容如下：</p>
+<pre><code>foo(&#39;data&#39;);
+</code></pre><p>这样一来，我们如果在页面中先准备好<code>foo()</code>函数，然后给页面动态加一个<code>&lt;script&gt;</code>节点，相当于动态读取外域的JavaScript资源，最后就等着接收回调了。</p>
+<p>以163的股票查询URL为例，对于URL：<a href="javascript:if(confirm(%27http://api.money.126.net/data/feed/0000001,1399001?callback=refreshPrice  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://api.money.126.net/data/feed/0000001,1399001?callback=refreshPrice%27" tppabs="http://api.money.126.net/data/feed/0000001,1399001?callback=refreshPrice">http://api.money.126.net/data/feed/0000001,1399001?callback=refreshPrice</a>，你将得到如下返回：</p>
+<pre><code>refreshPrice({&quot;0000001&quot;:{&quot;code&quot;: &quot;0000001&quot;, ... });
+</code></pre><p>因此我们需要首先在页面中准备好回调函数：</p>
+<script>
+function refreshPrice(data) {
+    var p = document.getElementById('test-jsonp');
+    p.innerHTML = '当前价格：' +
+        data['0000001'].name +': ' + 
+        data['0000001'].price + '；' +
+        data['1399001'].name + ': ' +
+        data['1399001'].price;
+}
+function getPrice() {
+    var
+        js = document.createElement('script'),
+        head = document.getElementsByTagName('head')[0];
+    js.src = 'http://api.money.126.net/data/feed/0000001,1399001?callback=refreshPrice';
+    head.appendChild(js);
+}
+</script>
+
+<pre><code>function refreshPrice(data) {
+    var p = document.getElementById(&#39;test-jsonp&#39;);
+    p.innerHTML = &#39;当前价格：&#39; +
+        data[&#39;0000001&#39;].name +&#39;: &#39; + 
+        data[&#39;0000001&#39;].price + &#39;；&#39; +
+        data[&#39;1399001&#39;].name + &#39;: &#39; +
+        data[&#39;1399001&#39;].price;
+}
+</code></pre><div>
+    <p id="test-jsonp">当前价格：</p>
+    <p><button type="button" onclick="getPrice()">刷新</button></p>
+</div>
+
+<p>最后用<code>getPrice()</code>函数触发：</p>
+<pre><code>function getPrice() {
+    var
+        js = document.createElement(&#39;script&#39;),
+        head = document.getElementsByTagName(&#39;head&#39;)[0];
+    js.src = &#39;http://api.money.126.net/data/feed/0000001,1399001?callback=refreshPrice&#39;;
+    head.appendChild(js);
+}
+</code></pre><p>就完成了跨域加载数据。</p>
+<h3 id="cors">CORS</h3>
+<p>如果浏览器支持HTML5，那么就可以一劳永逸地使用新的跨域策略：CORS了。</p>
+<p>CORS全称Cross-Origin Resource Sharing，是HTML5规范定义的如何跨域访问资源。</p>
+<p>了解CORS前，我们先搞明白概念：</p>
+<p>Origin表示本域，也就是浏览器当前页面的域。当JavaScript向外域（如sina.com）发起请求后，浏览器收到响应后，首先检查<code>Access-Control-Allow-Origin</code>是否包含本域，如果是，则此次跨域请求成功，如果不是，则请求失败，JavaScript将无法获取到响应的任何数据。</p>
+<p>用一个图来表示就是：</p>
+<p><img src="l-25.png" tppabs="http://www.liaoxuefeng.com/files/attachments/00143640805071744d58164a40e42ef92b9973824451595000/l" alt="js-cors"></p>
+<p>假设本域是<code>my.com</code>，外域是<code>sina.com</code>，只要响应头<code>Access-Control-Allow-Origin</code>为<code>http://my.com</code>，或者是<code>*</code>，本次请求就可以成功。</p>
+<p>可见，跨域能否成功，取决于对方服务器是否愿意给你设置一个正确的<code>Access-Control-Allow-Origin</code>，决定权始终在对方手中。</p>
+<p>上面这种跨域请求，称之为“简单请求”。简单请求包括GET、HEAD和POST（POST的Content-Type类型
+仅限<code>application/x-www-form-urlencoded</code>、<code>multipart/form-data</code>和<code>text/plain</code>），并且不能出现任何自定义头（例如，<code>X-Custom: 12345</code>），通常能满足90%的需求。</p>
+<p>无论你是否需要用JavaScript通过CORS跨域请求资源，你都要了解CORS的原理。最新的浏览器全面支持HTML5。在引用外域资源时，除了JavaScript和CSS外，都要验证CORS。例如，当你引用了某个第三方CDN上的字体文件时：</p>
+<pre><code>/* CSS */
+@font-face {
+  font-family: &#39;FontAwesome&#39;;
+  src: url(&#39;http://cdn.com/fonts/fontawesome.ttf&#39;) format(&#39;truetype&#39;);
+}
+</code></pre><p>如果该CDN服务商未正确设置<code>Access-Control-Allow-Origin</code>，那么浏览器无法加载字体资源。</p>
+<p>对于PUT、DELETE以及其他类型如<code>application/json</code>的POST请求，在发送AJAX请求之前，浏览器会先发送一个<code>OPTIONS</code>请求（称为preflighted请求）到这个URL上，询问目标服务器是否接受：</p>
+<pre><code>OPTIONS /path/to/resource HTTP/1.1
+Host: bar.com
+Origin: http://my.com
+Access-Control-Request-Method: POST
+</code></pre><p>服务器必须响应并明确指出允许的Method：</p>
+<pre><code>HTTP/1.1 200 OK
+Access-Control-Allow-Origin: http://my.com
+Access-Control-Allow-Methods: POST, GET, PUT, OPTIONS
+Access-Control-Max-Age: 86400
+</code></pre><p>浏览器确认服务器响应的<code>Access-Control-Allow-Methods</code>头确实包含将要发送的AJAX请求的Method，才会继续发送AJAX，否则，抛出一个错误。</p>
+<p>由于以<code>POST</code>、<code>PUT</code>方式传送JSON格式的数据在REST中很常见，所以要跨域正确处理<code>POST</code>和<code>PUT</code>请求，服务器端必须正确响应<code>OPTIONS</code>请求。</p>
+<p>需要深入了解CORS的童鞋请移步<a href="javascript:if(confirm(%27http://www.w3.org/TR/cors/  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.w3.org/TR/cors/%27" tppabs="http://www.w3.org/TR/cors/">W3C文档</a>。</p>
+
+    </div>
+    <hr>
+    <div id="x-wiki-prev-next" class="uk-clearfix uk-margin-left uk-margin-right">
+    </div>
+    <hr>
+
+    <div class="x-anchor"><a name="comments"></a></div>
+
+    <h3>Comments</h3>
+
+    <ul id="x-comment-list" class="uk-comment-list">
+    </ul>
+
+    <h3>Make a Comment</h3>
+
+    <div class="x-display-if-not-signin">
+        <p><button type="button" class="uk-button" onclick="showSignin()"><i class="uk-icon-signin"></i> Sign In to Make a Comment</button></p>
+    </div>
+
+    <div id="x-comment-area"></div>
+
+
+                        </div>
+                        <div>
+                            <div id="the-promos" class="uk-clearfix" style="margin:15px 0">
+
+<div style="width:336px;height:280px;float:left;">
+<script async src="adsbygoogle.js" tppabs="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- lxf-336x280 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-6727358730461554"
+     data-ad-slot="8492060710"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div style="width:336px;height:280px;float:left;">
+<script async src="adsbygoogle.js" tppabs="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- lxf-336x280 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-6727358730461554"
+     data-ad-slot="8492060710"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div style="width:336px;height:280px;float:left;">
+<script type="text/javascript">
+    /*336x280 @baidu*/
+    var cpro_id = "u2068816";
+</script>
+<script src="c.js" tppabs="http://cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript"></script>
+</div>
+
+<div style="width:336px;height:280px;float:left;">
+<script type="text/javascript">
+    /*336x280 @baidu*/
+    var cpro_id = "u2068816";
+</script>
+<script src="c.js" tppabs="http://cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript"></script>
+</div>
+
+
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="uk-grid">
+                <div class="x-body-after uk-width-1-1">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="x-offcanvas-left" class="uk-offcanvas">
+        <div class="uk-offcanvas-bar">
+            <div class="uk-panel">
+                
+    <ul class="uk-nav uk-nav-side">
+        <li class="uk-nav-header">Index</li>
+    </ul>
+    <ul class="uk-nav uk-nav-side">
+        <li id="off-001434446689867b27157e896e74d51a89c25cc8b43bdb3000"><a href="001434446689867b27157e896e74d51a89c25cc8b43bdb3000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000">JavaScript教程</a></li>
+    
+        <li id="off-0014344991049250a2c80ec84cb4861bbd1d9b2c0c2850e000" style="margin-left:1em;">
+            <a href="0014344991049250a2c80ec84cb4861bbd1d9b2c0c2850e000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014344991049250a2c80ec84cb4861bbd1d9b2c0c2850e000">JavaScript简介</a>
+        </li>
+    
+        <li id="off-00143449917624134f5c4695b524e81a581ab5a222b05ec000" style="margin-left:1em;">
+            <a href="00143449917624134f5c4695b524e81a581ab5a222b05ec000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449917624134f5c4695b524e81a581ab5a222b05ec000">快速入门</a>
+        </li>
+    
+        <li id="off-00143470025281435e4e03117a74438aaf98c4f7b30b307000" style="margin-left:2em;">
+            <a href="00143470025281435e4e03117a74438aaf98c4f7b30b307000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143470025281435e4e03117a74438aaf98c4f7b30b307000">基本语法</a>
+        </li>
+    
+        <li id="off-001434499190108eec0bdf14e704a09935cd112e501e31a000" style="margin-left:2em;">
+            <a href="001434499190108eec0bdf14e704a09935cd112e501e31a000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499190108eec0bdf14e704a09935cd112e501e31a000">数据类型和变量</a>
+        </li>
+    
+        <li id="off-001434499203693072018f8878842a9b0011e3ff4e38b6b000" style="margin-left:2em;">
+            <a href="001434499203693072018f8878842a9b0011e3ff4e38b6b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499203693072018f8878842a9b0011e3ff4e38b6b000">字符串</a>
+        </li>
+    
+        <li id="off-00143449921138898cdeb7fc2214dc08c6c67827758cd2f000" style="margin-left:2em;">
+            <a href="00143449921138898cdeb7fc2214dc08c6c67827758cd2f000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449921138898cdeb7fc2214dc08c6c67827758cd2f000">数组</a>
+        </li>
+    
+        <li id="off-00143449922400335c44d4b8c904ff29a78fd4334347131000" style="margin-left:2em;">
+            <a href="00143449922400335c44d4b8c904ff29a78fd4334347131000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449922400335c44d4b8c904ff29a78fd4334347131000">对象</a>
+        </li>
+    
+        <li id="off-0014345005693811782d9e338994ec19aa1c5325824bc15000" style="margin-left:2em;">
+            <a href="0014345005693811782d9e338994ec19aa1c5325824bc15000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345005693811782d9e338994ec19aa1c5325824bc15000">条件判断</a>
+        </li>
+    
+        <li id="off-001434500620831b2aeb535f5e245c788493e9f4ff416c0000" style="margin-left:2em;">
+            <a href="001434500620831b2aeb535f5e245c788493e9f4ff416c0000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434500620831b2aeb535f5e245c788493e9f4ff416c0000">循环</a>
+        </li>
+    
+        <li id="off-0014345007434430758e3ac6e1b44b1865178e7aff9082e000" style="margin-left:2em;">
+            <a href="0014345007434430758e3ac6e1b44b1865178e7aff9082e000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345007434430758e3ac6e1b44b1865178e7aff9082e000">Map和Set</a>
+        </li>
+    
+        <li id="off-00143450082788640f82a480be8481a8ce8272951a40970000" style="margin-left:2em;">
+            <a href="00143450082788640f82a480be8481a8ce8272951a40970000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450082788640f82a480be8481a8ce8272951a40970000">iterable</a>
+        </li>
+    
+        <li id="off-0014344992519683bcfa2e33760462fb5db8eb9430924be000" style="margin-left:1em;">
+            <a href="0014344992519683bcfa2e33760462fb5db8eb9430924be000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014344992519683bcfa2e33760462fb5db8eb9430924be000">函数</a>
+        </li>
+    
+        <li id="off-00143449926746982f181557d9b423f819e89709feabdb4000" style="margin-left:2em;">
+            <a href="00143449926746982f181557d9b423f819e89709feabdb4000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449926746982f181557d9b423f819e89709feabdb4000">函数定义和调用</a>
+        </li>
+    
+        <li id="off-0014344993159773a464f34e1724700a6d5dd9e235ceb7c000" style="margin-left:2em;">
+            <a href="0014344993159773a464f34e1724700a6d5dd9e235ceb7c000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014344993159773a464f34e1724700a6d5dd9e235ceb7c000">变量作用域</a>
+        </li>
+    
+        <li id="off-0014345005399057070809cfaa347dfb7207900cfd116fb000" style="margin-left:2em;">
+            <a href="0014345005399057070809cfaa347dfb7207900cfd116fb000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345005399057070809cfaa347dfb7207900cfd116fb000">方法</a>
+        </li>
+    
+        <li id="off-001434499355829ead974e550644e2ebd9fd8bb1b0dd721000" style="margin-left:2em;">
+            <a href="001434499355829ead974e550644e2ebd9fd8bb1b0dd721000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499355829ead974e550644e2ebd9fd8bb1b0dd721000">高阶函数</a>
+        </li>
+    
+        <li id="off-001435119854495d29b9b3d7028477a96ed74db95032675000" style="margin-left:3em;">
+            <a href="001435119854495d29b9b3d7028477a96ed74db95032675000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001435119854495d29b9b3d7028477a96ed74db95032675000">map/reduce</a>
+        </li>
+    
+        <li id="off-0014351219769203e3fbe1ed611475db3d439393add8997000" style="margin-left:3em;">
+            <a href="0014351219769203e3fbe1ed611475db3d439393add8997000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014351219769203e3fbe1ed611475db3d439393add8997000">filter</a>
+        </li>
+    
+        <li id="off-0014351226817991a9c08f1ec0a45c99b9209bcfc71b8f6000" style="margin-left:3em;">
+            <a href="0014351226817991a9c08f1ec0a45c99b9209bcfc71b8f6000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014351226817991a9c08f1ec0a45c99b9209bcfc71b8f6000">sort</a>
+        </li>
+    
+        <li id="off-00143449934543461c9d5dfeeb848f5b72bd012e1113d15000" style="margin-left:2em;">
+            <a href="00143449934543461c9d5dfeeb848f5b72bd012e1113d15000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449934543461c9d5dfeeb848f5b72bd012e1113d15000">闭包</a>
+        </li>
+    
+        <li id="off-001438565969057627e5435793645b7acaee3b6869d1374000" style="margin-left:2em;">
+            <a href="001438565969057627e5435793645b7acaee3b6869d1374000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001438565969057627e5435793645b7acaee3b6869d1374000">箭头函数</a>
+        </li>
+    
+        <li id="off-00143450083887673122b45a4414333ac366c3c935125e7000" style="margin-left:2em;">
+            <a href="00143450083887673122b45a4414333ac366c3c935125e7000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450083887673122b45a4414333ac366c3c935125e7000">generator</a>
+        </li>
+    
+        <li id="off-00143449957099176f55ba07b764c3daa522217d0e42643000" style="margin-left:1em;">
+            <a href="00143449957099176f55ba07b764c3daa522217d0e42643000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449957099176f55ba07b764c3daa522217d0e42643000">标准对象</a>
+        </li>
+    
+        <li id="off-001434499525761186acdd5ac3a44f8a50cc0ed8606139b000" style="margin-left:2em;">
+            <a href="001434499525761186acdd5ac3a44f8a50cc0ed8606139b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499525761186acdd5ac3a44f8a50cc0ed8606139b000">Date</a>
+        </li>
+    
+        <li id="off-001434499503920bb7b42ff6627420da2ceae4babf6c4f2000" style="margin-left:2em;">
+            <a href="001434499503920bb7b42ff6627420da2ceae4babf6c4f2000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499503920bb7b42ff6627420da2ceae4babf6c4f2000">RegExp</a>
+        </li>
+    
+        <li id="off-001434499490767fe5a0e31e17e44b69dcd1196f7ec6fc6000" style="margin-left:2em;">
+            <a href="001434499490767fe5a0e31e17e44b69dcd1196f7ec6fc6000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499490767fe5a0e31e17e44b69dcd1196f7ec6fc6000">JSON</a>
+        </li>
+    
+        <li id="off-001434499763408e24c210985d34edcabbca944b4239e20000" style="margin-left:1em;">
+            <a href="001434499763408e24c210985d34edcabbca944b4239e20000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499763408e24c210985d34edcabbca944b4239e20000">面向对象编程</a>
+        </li>
+    
+        <li id="off-0014344997235247b53be560ab041a7b10360a567422a78000" style="margin-left:2em;">
+            <a href="0014344997235247b53be560ab041a7b10360a567422a78000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014344997235247b53be560ab041a7b10360a567422a78000">创建对象</a>
+        </li>
+    
+        <li id="off-0014344997013405abfb7f0e1904a04ba6898a384b1e925000" style="margin-left:2em;">
+            <a href="0014344997013405abfb7f0e1904a04ba6898a384b1e925000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014344997013405abfb7f0e1904a04ba6898a384b1e925000">原型继承</a>
+        </li>
+    
+        <li id="off-001458267339633fd3a83c597d04b5fb59f7d1f6792efb3000" style="margin-left:2em;">
+            <a href="001458267339633fd3a83c597d04b5fb59f7d1f6792efb3000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001458267339633fd3a83c597d04b5fb59f7d1f6792efb3000">class继承</a>
+        </li>
+    
+        <li id="off-0014344997647015f03abc1bb5f46129a7526292a12ab26000" style="margin-left:1em;">
+            <a href="0014344997647015f03abc1bb5f46129a7526292a12ab26000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014344997647015f03abc1bb5f46129a7526292a12ab26000">浏览器</a>
+        </li>
+    
+        <li id="off-001434499832124d97d77b00706461f9daf1a390b75ade1000" style="margin-left:2em;">
+            <a href="001434499832124d97d77b00706461f9daf1a390b75ade1000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499832124d97d77b00706461f9daf1a390b75ade1000">浏览器对象</a>
+        </li>
+    
+        <li id="off-001434499851683f7f8d6b7717343248a75d5e7f930def4000" style="margin-left:2em;">
+            <a href="001434499851683f7f8d6b7717343248a75d5e7f930def4000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499851683f7f8d6b7717343248a75d5e7f930def4000">操作DOM</a>
+        </li>
+    
+        <li id="off-0014345011220342fa37b4a62ea4972bf9e6da10edc2a85000" style="margin-left:3em;">
+            <a href="0014345011220342fa37b4a62ea4972bf9e6da10edc2a85000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345011220342fa37b4a62ea4972bf9e6da10edc2a85000">更新DOM</a>
+        </li>
+    
+        <li id="off-0014359940861047248456754f44e55919fe9370c723ae6000" style="margin-left:3em;">
+            <a href="0014359940861047248456754f44e55919fe9370c723ae6000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014359940861047248456754f44e55919fe9370c723ae6000">插入DOM</a>
+        </li>
+    
+        <li id="off-001435997163473d309006809fa43abbba322be3eb090a8000" style="margin-left:3em;">
+            <a href="001435997163473d309006809fa43abbba322be3eb090a8000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001435997163473d309006809fa43abbba322be3eb090a8000">删除DOM</a>
+        </li>
+    
+        <li id="off-001434499922277b890fd537901490a84fc24b2b8b8867e000" style="margin-left:2em;">
+            <a href="001434499922277b890fd537901490a84fc24b2b8b8867e000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499922277b890fd537901490a84fc24b2b8b8867e000">操作表单</a>
+        </li>
+    
+        <li id="off-00143449993875172bbfac4b9764e2d9e2b5a17c706b3db000" style="margin-left:2em;">
+            <a href="00143449993875172bbfac4b9764e2d9e2b5a17c706b3db000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449993875172bbfac4b9764e2d9e2b5a17c706b3db000">操作文件</a>
+        </li>
+    
+        <li id="off-001434499861493e7c35be5e0864769a2c06afb4754acc6000" style="margin-left:2em;">
+            <a href="001434499861493e7c35be5e0864769a2c06afb4754acc6000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499861493e7c35be5e0864769a2c06afb4754acc6000">AJAX</a>
+        </li>
+    
+        <li id="off-0014345008539155e93fc16046d4bb7854943814c4f9dc2000" style="margin-left:2em;">
+            <a href="0014345008539155e93fc16046d4bb7854943814c4f9dc2000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345008539155e93fc16046d4bb7854943814c4f9dc2000">Promise</a>
+        </li>
+    
+        <li id="off-00143449990549914b596ac1da54a228a6fa9643e88bc0c000" style="margin-left:2em;">
+            <a href="00143449990549914b596ac1da54a228a6fa9643e88bc0c000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143449990549914b596ac1da54a228a6fa9643e88bc0c000">Canvas</a>
+        </li>
+    
+        <li id="off-001434499993118b8173572625b4afe93a8b19dd707ea1d000" style="margin-left:1em;">
+            <a href="001434499993118b8173572625b4afe93a8b19dd707ea1d000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499993118b8173572625b4afe93a8b19dd707ea1d000">jQuery</a>
+        </li>
+    
+        <li id="off-0014345004443979a29e0e0be054e75a652613f132f7f0b000" style="margin-left:2em;">
+            <a href="0014345004443979a29e0e0be054e75a652613f132f7f0b000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345004443979a29e0e0be054e75a652613f132f7f0b000">选择器</a>
+        </li>
+    
+        <li id="off-001437023139167510b90eb2c924f72aeba0db592a9eb54000" style="margin-left:3em;">
+            <a href="001437023139167510b90eb2c924f72aeba0db592a9eb54000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001437023139167510b90eb2c924f72aeba0db592a9eb54000">层级选择器</a>
+        </li>
+    
+        <li id="off-0014370268753868fc999e1563341fcb9df078b160a20e5000" style="margin-left:3em;">
+            <a href="0014370268753868fc999e1563341fcb9df078b160a20e5000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014370268753868fc999e1563341fcb9df078b160a20e5000">查找和过滤</a>
+        </li>
+    
+        <li id="off-001434500494451273e6b3dec9d411d9ba841dee8caec45000" style="margin-left:2em;">
+            <a href="001434500494451273e6b3dec9d411d9ba841dee8caec45000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434500494451273e6b3dec9d411d9ba841dee8caec45000">操作DOM</a>
+        </li>
+    
+        <li id="off-001437110841551950380fdc17c4abdaebd38363dbe2348000" style="margin-left:3em;">
+            <a href="001437110841551950380fdc17c4abdaebd38363dbe2348000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001437110841551950380fdc17c4abdaebd38363dbe2348000">修改DOM结构</a>
+        </li>
+    
+        <li id="off-00143564690172894383ccd7ab64669b4971f4b03fa342d000" style="margin-left:2em;">
+            <a href="00143564690172894383ccd7ab64669b4971f4b03fa342d000.htm" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143564690172894383ccd7ab64669b4971f4b03fa342d000">事件</a>
+        </li>
+    
+        <li id="off-001434500456006abd6381dc3bb439d932cb895b62d9eee000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434500456006abd6381dc3bb439d932cb895b62d9eee000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434500456006abd6381dc3bb439d932cb895b62d9eee000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434500456006abd6381dc3bb439d932cb895b62d9eee000">动画</a>
+        </li>
+    
+        <li id="off-00143450046645491e306a4f74746daaef4d172f66335b5000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450046645491e306a4f74746daaef4d172f66335b5000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450046645491e306a4f74746daaef4d172f66335b5000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450046645491e306a4f74746daaef4d172f66335b5000">AJAX</a>
+        </li>
+    
+        <li id="off-0014356468967974219593d94f64d06b370c87fc38eade4000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014356468967974219593d94f64d06b370c87fc38eade4000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014356468967974219593d94f64d06b370c87fc38eade4000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014356468967974219593d94f64d06b370c87fc38eade4000">扩展</a>
+        </li>
+    
+        <li id="off-001450370530539bc6e0e3dc02c4d3bb79993a8cde056b5000" style="margin-left:1em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450370530539bc6e0e3dc02c4d3bb79993a8cde056b5000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450370530539bc6e0e3dc02c4d3bb79993a8cde056b5000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450370530539bc6e0e3dc02c4d3bb79993a8cde056b5000">underscore</a>
+        </li>
+    
+        <li id="off-001450372452505599881a3debd4becbe1591a94950fbb8000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450372452505599881a3debd4becbe1591a94950fbb8000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450372452505599881a3debd4becbe1591a94950fbb8000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450372452505599881a3debd4becbe1591a94950fbb8000">Collections</a>
+        </li>
+    
+        <li id="off-001450375778335b78230044e114619bb4211c3769897a7000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450375778335b78230044e114619bb4211c3769897a7000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450375778335b78230044e114619bb4211c3769897a7000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450375778335b78230044e114619bb4211c3769897a7000">Arrays</a>
+        </li>
+    
+        <li id="off-001450391119558965d1614860145b881340e490534c5c3000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450391119558965d1614860145b881340e490534c5c3000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450391119558965d1614860145b881340e490534c5c3000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450391119558965d1614860145b881340e490534c5c3000">Functions</a>
+        </li>
+    
+        <li id="off-0014504059891467b6dacbe5960461983d2c0a8d423d037000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014504059891467b6dacbe5960461983d2c0a8d423d037000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014504059891467b6dacbe5960461983d2c0a8d423d037000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014504059891467b6dacbe5960461983d2c0a8d423d037000">Objects</a>
+        </li>
+    
+        <li id="off-001450409116077b5e000f9cb57448785b181b0939caecd000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450409116077b5e000f9cb57448785b181b0939caecd000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450409116077b5e000f9cb57448785b181b0939caecd000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001450409116077b5e000f9cb57448785b181b0939caecd000">Chaining</a>
+        </li>
+    
+        <li id="off-001434501245426ad4b91f2b880464ba876a8e3043fc8ef000" style="margin-left:1em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501245426ad4b91f2b880464ba876a8e3043fc8ef000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501245426ad4b91f2b880464ba876a8e3043fc8ef000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501245426ad4b91f2b880464ba876a8e3043fc8ef000">Node.js</a>
+        </li>
+    
+        <li id="off-00143450141843488beddae2a1044cab5acb5125baf0882000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450141843488beddae2a1044cab5acb5125baf0882000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450141843488beddae2a1044cab5acb5125baf0882000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450141843488beddae2a1044cab5acb5125baf0882000">安装Node.js和npm</a>
+        </li>
+    
+        <li id="off-001434501436552e03ec6cc152b4c84959f14d0ea278488000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501436552e03ec6cc152b4c84959f14d0ea278488000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501436552e03ec6cc152b4c84959f14d0ea278488000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501436552e03ec6cc152b4c84959f14d0ea278488000">第一个Node程序</a>
+        </li>
+    
+        <li id="off-001470969077294a6455fc9cd1f48b69f82cd05e7fa9b40000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001470969077294a6455fc9cd1f48b69f82cd05e7fa9b40000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001470969077294a6455fc9cd1f48b69f82cd05e7fa9b40000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001470969077294a6455fc9cd1f48b69f82cd05e7fa9b40000">搭建Node开发环境</a>
+        </li>
+    
+        <li id="off-001434502419592fd80bbb0613a42118ccab9435af408fd000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502419592fd80bbb0613a42118ccab9435af408fd000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502419592fd80bbb0613a42118ccab9435af408fd000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502419592fd80bbb0613a42118ccab9435af408fd000">模块</a>
+        </li>
+    
+        <li id="off-001434501482448f6b36071ab6949d3a7ecb5a71a3c9df9000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501482448f6b36071ab6949d3a7ecb5a71a3c9df9000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501482448f6b36071ab6949d3a7ecb5a71a3c9df9000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501482448f6b36071ab6949d3a7ecb5a71a3c9df9000">基本模块</a>
+        </li>
+    
+        <li id="off-001434501497361a4e77c055f5c4a8da2d5a1868df36ad1000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501497361a4e77c055f5c4a8da2d5a1868df36ad1000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501497361a4e77c055f5c4a8da2d5a1868df36ad1000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501497361a4e77c055f5c4a8da2d5a1868df36ad1000">fs</a>
+        </li>
+    
+        <li id="off-001434501515527e6fce6d5ec4b4fd9b572122cd1ec8ded000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501515527e6fce6d5ec4b4fd9b572122cd1ec8ded000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501515527e6fce6d5ec4b4fd9b572122cd1ec8ded000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501515527e6fce6d5ec4b4fd9b572122cd1ec8ded000">stream</a>
+        </li>
+    
+        <li id="off-0014345015296018cac40c198b543fead5c549865b9bd4a000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345015296018cac40c198b543fead5c549865b9bd4a000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345015296018cac40c198b543fead5c549865b9bd4a000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014345015296018cac40c198b543fead5c549865b9bd4a000">http</a>
+        </li>
+    
+        <li id="off-001434501504929883d11d84a1541c6907eefd792c0da51000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501504929883d11d84a1541c6907eefd792c0da51000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501504929883d11d84a1541c6907eefd792c0da51000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501504929883d11d84a1541c6907eefd792c0da51000">crypto</a>
+        </li>
+    
+        <li id="off-001434501549492cdf5d4013db14fa9ad8ca172f0664345000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501549492cdf5d4013db14fa9ad8ca172f0664345000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501549492cdf5d4013db14fa9ad8ca172f0664345000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501549492cdf5d4013db14fa9ad8ca172f0664345000">Web开发</a>
+        </li>
+    
+        <li id="off-001434501579966ab03decb0dd246e1a6799dd653a15e1b000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501579966ab03decb0dd246e1a6799dd653a15e1b000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501579966ab03decb0dd246e1a6799dd653a15e1b000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501579966ab03decb0dd246e1a6799dd653a15e1b000">koa</a>
+        </li>
+    
+        <li id="off-001471087582981d6c0ea265bf241b59a04fa6f61d767f6000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471087582981d6c0ea265bf241b59a04fa6f61d767f6000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471087582981d6c0ea265bf241b59a04fa6f61d767f6000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471087582981d6c0ea265bf241b59a04fa6f61d767f6000">koa入门</a>
+        </li>
+    
+        <li id="off-001471133885340dad9058705804899b1cc2d0a10e7dc80000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471133885340dad9058705804899b1cc2d0a10e7dc80000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471133885340dad9058705804899b1cc2d0a10e7dc80000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471133885340dad9058705804899b1cc2d0a10e7dc80000">处理URL</a>
+        </li>
+    
+        <li id="off-0014713964925087c29166d8c344a949364e40e2f28dc09000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014713964925087c29166d8c344a949364e40e2f28dc09000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014713964925087c29166d8c344a949364e40e2f28dc09000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014713964925087c29166d8c344a949364e40e2f28dc09000">使用Nunjucks</a>
+        </li>
+    
+        <li id="off-001434501628911140e1cb6ce7d42e5af81480f7ecd5802000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501628911140e1cb6ce7d42e5af81480f7ecd5802000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501628911140e1cb6ce7d42e5af81480f7ecd5802000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501628911140e1cb6ce7d42e5af81480f7ecd5802000">使用MVC</a>
+        </li>
+    
+        <li id="off-00143450161807565b0c93cb65d4df0a733bf15dc1f8c79000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450161807565b0c93cb65d4df0a733bf15dc1f8c79000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450161807565b0c93cb65d4df0a733bf15dc1f8c79000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450161807565b0c93cb65d4df0a733bf15dc1f8c79000">mysql</a>
+        </li>
+    
+        <li id="off-001471955049232be7492e76f514d45a2180e2c224eb7a6000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471955049232be7492e76f514d45a2180e2c224eb7a6000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471955049232be7492e76f514d45a2180e2c224eb7a6000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001471955049232be7492e76f514d45a2180e2c224eb7a6000">使用Sequelize</a>
+        </li>
+    
+        <li id="off-001472286125147031e735933574ae099842afd31be80d1000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472286125147031e735933574ae099842afd31be80d1000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472286125147031e735933574ae099842afd31be80d1000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472286125147031e735933574ae099842afd31be80d1000">建立Model</a>
+        </li>
+    
+        <li id="off-00147203593334596b366f3fe0b409fbc30ad81a0a91c4a000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147203593334596b366f3fe0b409fbc30ad81a0a91c4a000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147203593334596b366f3fe0b409fbc30ad81a0a91c4a000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147203593334596b366f3fe0b409fbc30ad81a0a91c4a000">mocha</a>
+        </li>
+    
+        <li id="off-00147204317563462840426beb04a849ba813eb46bb347c000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147204317563462840426beb04a849ba813eb46bb347c000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147204317563462840426beb04a849ba813eb46bb347c000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147204317563462840426beb04a849ba813eb46bb347c000">编写测试</a>
+        </li>
+    
+        <li id="off-0014723007105817ff3d8fae5b9491a88982aa1655e66be000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014723007105817ff3d8fae5b9491a88982aa1655e66be000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014723007105817ff3d8fae5b9491a88982aa1655e66be000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014723007105817ff3d8fae5b9491a88982aa1655e66be000">异步测试</a>
+        </li>
+    
+        <li id="off-001472780997905c8f293615c5a42eab058b6dc29936a5c000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472780997905c8f293615c5a42eab058b6dc29936a5c000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472780997905c8f293615c5a42eab058b6dc29936a5c000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472780997905c8f293615c5a42eab058b6dc29936a5c000">WebSocket</a>
+        </li>
+    
+        <li id="off-0014727922914053479c966220f47da91991fa9c27ac3ea000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014727922914053479c966220f47da91991fa9c27ac3ea000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014727922914053479c966220f47da91991fa9c27ac3ea000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014727922914053479c966220f47da91991fa9c27ac3ea000">使用ws</a>
+        </li>
+    
+        <li id="off-001472794708264206fcf1589bb43caa0395752aa26538c000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472794708264206fcf1589bb43caa0395752aa26538c000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472794708264206fcf1589bb43caa0395752aa26538c000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001472794708264206fcf1589bb43caa0395752aa26538c000">编写聊天室</a>
+        </li>
+    
+        <li id="off-001473590199114b8523ba038dd4359a16ad0bbd3c8a1f2000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001473590199114b8523ba038dd4359a16ad0bbd3c8a1f2000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001473590199114b8523ba038dd4359a16ad0bbd3c8a1f2000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001473590199114b8523ba038dd4359a16ad0bbd3c8a1f2000">REST</a>
+        </li>
+    
+        <li id="off-0014735914606943e2866257aa644b4bdfe01d26d29960b000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014735914606943e2866257aa644b4bdfe01d26d29960b000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014735914606943e2866257aa644b4bdfe01d26d29960b000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014735914606943e2866257aa644b4bdfe01d26d29960b000">编写REST API</a>
+        </li>
+    
+        <li id="off-0014735944539193ab2edd2740f44a79efb438a05e83727000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014735944539193ab2edd2740f44a79efb438a05e83727000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014735944539193ab2edd2740f44a79efb438a05e83727000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014735944539193ab2edd2740f44a79efb438a05e83727000">开发REST API</a>
+        </li>
+    
+        <li id="off-001475449022563a6591e6373324d1abd93e0e3fa04397f000" style="margin-left:3em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001475449022563a6591e6373324d1abd93e0e3fa04397f000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001475449022563a6591e6373324d1abd93e0e3fa04397f000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001475449022563a6591e6373324d1abd93e0e3fa04397f000">MVVM</a>
+        </li>
+    
+        <li id="off-0014757105098309140e608db714251bf071db711a9d183000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757105098309140e608db714251bf071db711a9d183000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757105098309140e608db714251bf071db711a9d183000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757105098309140e608db714251bf071db711a9d183000">单向绑定</a>
+        </li>
+    
+        <li id="off-00147574857851718682c42639f466a934ad9d4f485d1f2000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147574857851718682c42639f466a934ad9d4f485d1f2000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147574857851718682c42639f466a934ad9d4f485d1f2000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147574857851718682c42639f466a934ad9d4f485d1f2000">双向绑定</a>
+        </li>
+    
+        <li id="off-0014757513445737513d7d65cd64333b5b6ba772839e401000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757513445737513d7d65cd64333b5b6ba772839e401000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757513445737513d7d65cd64333b5b6ba772839e401000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757513445737513d7d65cd64333b5b6ba772839e401000">同步DOM结构</a>
+        </li>
+    
+        <li id="off-00147576011615487c65971b3bd4acfa8ee94baaab3dbf7000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147576011615487c65971b3bd4acfa8ee94baaab3dbf7000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147576011615487c65971b3bd4acfa8ee94baaab3dbf7000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147576011615487c65971b3bd4acfa8ee94baaab3dbf7000">集成API</a>
+        </li>
+    
+        <li id="off-0014757971662334e405bae72894f5c88a4bc75d01406da000" style="margin-left:4em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757971662334e405bae72894f5c88a4bc75d01406da000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757971662334e405bae72894f5c88a4bc75d01406da000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757971662334e405bae72894f5c88a4bc75d01406da000">在线电子表格</a>
+        </li>
+    
+        <li id="off-001434502089103cfd7d8160b6341d280499f541f430b64000" style="margin-left:2em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502089103cfd7d8160b6341d280499f541f430b64000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502089103cfd7d8160b6341d280499f541f430b64000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502089103cfd7d8160b6341d280499f541f430b64000">自动化工具</a>
+        </li>
+    
+        <li id="off-0014702883533702219013a10964054bd9a7c322b1c7e9c000" style="margin-left:1em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014702883533702219013a10964054bd9a7c322b1c7e9c000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014702883533702219013a10964054bd9a7c322b1c7e9c000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014702883533702219013a10964054bd9a7c322b1c7e9c000">React</a>
+        </li>
+    
+        <li id="off-001434502446010ad7a7602d71b49c9a3a0b8484f88f2cd000" style="margin-left:1em;">
+            <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502446010ad7a7602d71b49c9a3a0b8484f88f2cd000  \n\nThis file was not retrieved by Teleport Ultra, because it was unavailable, or its retrieval was aborted, or the project was stopped too soon.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502446010ad7a7602d71b49c9a3a0b8484f88f2cd000%27" tppabs="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434502446010ad7a7602d71b49c9a3a0b8484f88f2cd000">期末总结</a>
+        </li>
+    
+    </ul>
+    <div class="x-placeholder"></div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div id="footer">
+        <div class="x-footer uk-container x-container">
+            <hr>
+            <div class="uk-grid">
+                <div class="x-footer-copyright uk-width-small-1-2 uk-width-medium-1-3">
+                    <p>
+                        <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/%27" tppabs="http://www.liaoxuefeng.com/">廖雪峰的官方网站</a>&copy;2015
+                        <br>
+                        Powered by <a href="javascript:if(confirm(%27http://js.itranswarp.com/  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://js.itranswarp.com/%27" tppabs="http://js.itranswarp.com/" target="_blank">iTranswarp.js</a>
+                    </p>
+                </div>
+                <div class="uk-width-small-1-2 uk-width-medium-1-3 x-hidden-tiny">
+                    <a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/feed  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/feed%27" tppabs="http://www.liaoxuefeng.com/feed" target="_blank" class="uk-icon-button uk-icon-rss" data-uk-tooltip title="Subscribe the RSS"></a>
+                    <a href="javascript:if(confirm(%27https://github.com/michaelliao/itranswarp.js  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27https://github.com/michaelliao/itranswarp.js%27" tppabs="https://github.com/michaelliao/itranswarp.js" target="_blank" class="uk-icon-button uk-icon-github" data-uk-tooltip title="View source code on GitHub"></a>
+                    <a href="javascript:if(confirm(%27https://twitter.com/liaoxuefeng  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27https://twitter.com/liaoxuefeng%27" tppabs="https://twitter.com/liaoxuefeng" target="_blank" class="uk-icon-button uk-icon-twitter" data-uk-tooltip title="Follow author on Twitter"></a>
+                    <a href="javascript:if(confirm(%27http://www.weibo.com/liaoxuefeng  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.weibo.com/liaoxuefeng%27" tppabs="http://www.weibo.com/liaoxuefeng" target="_blank" class="uk-icon-button uk-icon-weibo uk-visible-large uk-hidden-medium" data-uk-tooltip title="Follow author on Weibo"></a>
+                </div>
+                <div class="uk-width-medium-1-3 uk-hidden-small">
+                    <p>
+                        <a href="javascript:if(confirm(%27https://github.com/michaelliao/itranswarp.js/issues  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27https://github.com/michaelliao/itranswarp.js/issues%27" tppabs="https://github.com/michaelliao/itranswarp.js/issues" target="_blank">Feedback</a>
+                        <br>
+                        <a href="javascript:if(confirm(%27https://github.com/michaelliao/itranswarp.js/blob/master/LICENSE  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27https://github.com/michaelliao/itranswarp.js/blob/master/LICENSE%27" tppabs="https://github.com/michaelliao/itranswarp.js/blob/master/LICENSE" target="_blank">License</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-signin" class="uk-modal">
+        <div class="uk-modal-dialog">
+            <a class="uk-modal-close uk-close"></a>
+            <div class="uk-modal-header">
+                <h2>Please Sign In</h2>
+            </div>
+            <p>You can sign in directly without register:</p>
+            
+            <h3><a href="javascript:if(confirm(%27http://www.liaoxuefeng.com/auth/from/weibo  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.liaoxuefeng.com/auth/from/weibo%27" tppabs="http://www.liaoxuefeng.com/auth/from/weibo"><i class="uk-icon-weibo"></i> 使用新浪微博登录</a></h3>
+            
+            <p>You need authorize to allow connect to your social passport for the first time.</p>
+        </div>
+    </div>
+
+    <div id="oldBrowser">
+        <div class="uk-alert uk-alert-danger" data-uk-alert>
+            <a href="#0" class="uk-alert-close uk-close"></a>
+            <p>
+                WARNING: You are using an old browser that does not support HTML5.
+                Please choose a modern browser (<a href="javascript:if(confirm(%27http://www.google.com/chrome  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.google.com/chrome%27" tppabs="http://www.google.com/chrome" target="_blank">Chrome</a> / <a href="javascript:if(confirm(%27http://www.mozilla.org/firefox/  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.mozilla.org/firefox/%27" tppabs="http://www.mozilla.org/firefox/" target="_blank">Firefox</a> / <a href="javascript:if(confirm(%27http://www.apple.com/safari/  \n\nThis file was not retrieved by Teleport Ultra, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://www.apple.com/safari/%27" tppabs="http://www.apple.com/safari/" target="_blank">Sarafi</a>) to get a good experience.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
