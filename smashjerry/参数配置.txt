@@ -1,0 +1,10 @@
+游戏时间-------txt_gameTime
+倒计时时间------------------------div  id=timeout
+地鼠出现间隔---txt_remainedTime
+停留时间 ------txt_staytime
+得分情况 ------------------------- div  id=score
+
+开始游戏  button   onclick="startgame()"
+退出游戏  reset    onclick="stopGame()"
+
+<td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>

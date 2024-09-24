@@ -1,0 +1,56 @@
+/*主体部分*/
+body {
+	font-size: 12px;
+	background-image: url(../images/bg.jpg);
+	background-position: center top;
+	font-weight:bold;
+	background-repeat: no-repeat;
+}
+
+/*新建样式*/
+#text {
+    width:450px;
+	height:189px;
+	position: absolute;
+	left: 464px;
+	top: 10px;
+}
+#text form table{
+
+	margin-left:100px;
+}
+.button_style {
+	height: 25px;
+	width: 100px;
+	background-color: #eeeeee;
+	border: 1px solid #66CCCC;
+	cursor:hand;
+}
+.instrument {
+	color: #00CCFF;
+	text-indent: 24px;
+	line-height: 20px;
+}
+.text_description {
+	font-size: 14px;
+	line-height: 20px;
+}
+#author {
+	height: 70px;
+	width: 140px;
+	position: absolute;
+	left: 822px;
+	top: 219px;
+}
+#mainBody {
+	position: absolute;
+	height: 350px;
+	width: 350px;
+	left: 269px;
+	top: 220px;
+	cursor: url(images/mouse.ani);
+}
+#mainBody table{
+
+	margin-left:100px;
+}

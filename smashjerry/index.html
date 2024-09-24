@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>打地鼠游戏</title>
+
+<link href="css/body_text.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="js/mouse.js"></script>
+</head>
+
+<body>
+<bgsound src="images/bgsound.MP3" loop="-1" />
+<div id="text">
+<form name="form1" id="form1">
+  <table width="450" border="0" cellpadding="0" cellspacing="0">
+    <tr id ="1h">
+      <td width="120" height="25">--游戏时间:--</td>
+      <td width="143">
+         <input name="txt_gameTime" type="text" id="txt_gameTime" value="1" size="10" />分钟
+      </td>
+	
+      <td width="187" rowspan="6" valign="top">
+         <p align="center" class="instrument">游戏说明</p>
+         <p style="color:#FF0000" class="instrument">点击&quot;开始游戏&quot;按扭,在下图中随机产生地鼠,地鼠消失前点击地鼠进行击打,打中地鼠得100分的奖励;打不中,扣除100分,快行动吧!地考考你的反应和反应能力!</p>
+         <p class="instrument">&nbsp;</p>
+      </td>
+    </tr>
+    <tr id ="2h">
+      <td height="25">--倒计时间:--</td>
+      <td><div id="timeOut"></div></td>
+    </tr>
+    <tr id = "3h">
+      <td height="25">--地鼠出现间隔:--</td>
+      <td>
+         <input name="txt_remainedTime" type="text" id="txt_remainedTime" value="1" size="10" />秒钟
+      </td>
+    </tr>
+    <tr id ="4h">
+      <td height="25">--停留时间:--</td>
+      <td>
+         <input name="txt_stayTime" type="text" id="txt_stayTime" value="1" size="10" /> 秒钟
+      </td>
+    </tr>
+    <tr id ="5h">
+      <td height="50">--得分情况:--</td>
+      <td><div id="score"></div></td>
+    </tr>
+    <tr id="6h">
+      <td align="center">
+         <input name="btn_start" type="button" class="button_style" id="btn_start" onclick="startGame()" 
+         value="开始游戏" />
+      </td>
+      <td align="center">
+         <input name="btn_end"  type="reset" class="button_style" id="btn_end" onclick="stopGame()" 
+         value="退出游戏" disabled="disabled"/>
+      </td>
+    </tr>
+  </table>
+</form>
+</div>
+<div id="author">
+  <p style="color:#FF0000"class="instrument"> 
+         作者:理东阁<br/>
+         指导老师：卢健良
+  </p>
+</div>
+<div id="mainBody">
+  <table width="300" height="300" border="1" cellpadding="0" cellspacing="5" bgcolor="#FFFFFF">
+    <tr>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+    </tr>
+    <tr>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+    </tr>
+    <tr>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+    </tr>
+    <tr>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+    </tr>
+    <tr>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+      <td><img src="images/00.jpg" width="64" height="64" onclick="hitMouse(this)" /></td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>
